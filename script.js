@@ -42,6 +42,7 @@ const footerQuotes = [
     "跨平台我就选Chromium！",
     "面对DDOS攻击，礼貌站长：你吗",
     "这么精彩的视频，不得配个绝版周边助助兴？",
+    "Performance & Security by Cloudflare",
     "Github是全球最大的同性交友网站",
     "哔哩哔哩 (゜-゜)つロ 干杯~",
     "¿",
@@ -335,168 +336,80 @@ function qq() {
 
 }
 
-/* topbar logo responsive behavior — real-time shrinker + visible debug logs */
+// 简化版：当联系方式被挤出屏幕时让 logo 渐隐，空间足够时渐显；保证联系方式靠右。
 (function(){
     const LOGO_ID = 'topbar-logo';
-    const SHORT_SRC = '/img/shortlogo.png';
-    const GAP = 8; // px
-    const MIN_SHOW = 100; // px — 低于此宽度直接隐藏
-    let _orig = { src: null, widthAttr: '', display: '' };
+    const LINKS_SELECTOR = '.topbar-links';
+    const GAP = 6; // px 容差
 
-    function saveOrig(logo){
-        if(!_orig.src){
-            _orig.src = logo.getAttribute('src') || logo.src;
-            _orig.widthAttr = logo.getAttribute('width') || '';
-            _orig.display = logo.style.display || '';
-            // apply explicit width so transitions are consistent
-            if(_orig.widthAttr) logo.style.width = _orig.widthAttr + (isNaN(_orig.widthAttr) ? '' : 'px');
-        }
+    function ensureContactsRight(links){
+        try{ links.style.display = links.style.display || 'flex'; links.style.justifyContent = 'flex-end'; }catch(e){}
     }
 
-    function contactsOffscreen(links, required = 3){
+    function contactsOffscreen(links){
+        if(!links) return false;
         const children = Array.from(links.children).filter(el => el.id !== 'client_dl');
-        const contacts = children.slice(0, required);
-        if(contacts.length === 0) return false;
-        // use a small gap so we don't stop shrinking prematurely when an icon brushes
-        return contacts.some(c => c.getBoundingClientRect().right > window.innerWidth - GAP);
+        if(children.length === 0) return false;
+        // 如果整个 links 容器没有超出视口，认为没被挤出
+        try{ const linksRect = links.getBoundingClientRect(); if(linksRect.right <= window.innerWidth - GAP) return false; }catch(e){}
+        return children.some(c => c.getBoundingClientRect().right > window.innerWidth - GAP);
     }
 
-    function computeAllowedWidth(logo, links, required = 3){
-        const logoLeft = logo.getBoundingClientRect().left;
-        const children = Array.from(links.children).filter(el => el.id !== 'client_dl');
-        const anchor = children[Math.min(required - 1, Math.max(0, children.length - 1))];
-        let anchorLeft = anchor ? anchor.getBoundingClientRect().left : links.getBoundingClientRect().left;
-        // if the anchor is already offscreen, cap to viewport width so allowed isn't huge
-        anchorLeft = Math.min(anchorLeft, window.innerWidth);
-        return Math.max(0, Math.floor(anchorLeft - GAP - logoLeft));
-    }
-
-    function restoreLogo(logo){
-        console.debug('topbar-logo: restore');
-        if(_orig.src && logo.getAttribute('src') !== _orig.src) logo.setAttribute('src', _orig.src);
-        if(_orig.widthAttr) logo.setAttribute('width', _orig.widthAttr); else logo.removeAttribute('width');
-        logo.style.width = '';
-        logo.style.opacity = '1';
-        logo.style.display = _orig.display || '';
-        logo._shrinking = false;
-    }
-
-    function hideLogo(logo){
-        console.debug('topbar-logo: hide (shrink -> fade)');
-        // ensure element is visible to animate
-        logo.style.display = '';
-
-        const finishFade = () => {
-            logo.style.opacity = '0';
-            const onOpacity = (ev) => {
-                if(ev.propertyName !== 'opacity') return;
-                logo.removeEventListener('transitionend', onOpacity);
-                logo.style.display = 'none';
-                logo._shrinking = false;
-            };
-            logo.addEventListener('transitionend', onOpacity);
-            // fallback if transitionend doesn't fire
-            setTimeout(()=>{ logo.style.display = 'none'; logo._shrinking = false; }, 270);
-        };
-
-        const curW = Math.round(logo.getBoundingClientRect().width || 0);
-        if(curW > MIN_SHOW){
-            // shrink to MIN_SHOW first, then fade
-            logo.style.width = MIN_SHOW + 'px';
-            const onWidth = (e) => {
-                if(e.propertyName !== 'width') return;
-                logo.removeEventListener('transitionend', onWidth);
-                finishFade();
-            };
-            logo.addEventListener('transitionend', onWidth);
-            // width-transition fallback
-            setTimeout(finishFade, 310);
-        } else {
-            finishFade();
-        }
-    }
-
-    function continuousShrink(logo, links){
-        if(logo._shrinking) return;
-        logo._shrinking = true;
-        console.debug('topbar-logo: start continuous shrink');
-        const stepFn = () => {
-            if(!contactsOffscreen(links,3)){
-                console.debug('topbar-logo: contacts visible — stop shrinking');
-                logo._shrinking = false;
-                return;
-            }
-            const w = Math.round(logo.getBoundingClientRect().width);
-            if(w <= MIN_SHOW){ hideLogo(logo); return; }
-            // reduce by a small pixel step for smooth realtime feel
-            const delta = Math.max(4, Math.ceil(w * 0.05));
-            const newW = Math.max(MIN_SHOW, w - delta);
-            console.debug('topbar-logo: shrink step', { from: w, to: newW });
-            logo.style.width = newW + 'px';
-            // schedule next frame after transition completes (use requestAnimationFrame for responsiveness)
-            requestAnimationFrame(() => {
-                // if still offscreen, continue
-                if(contactsOffscreen(links,3)) requestAnimationFrame(stepFn); else logo._shrinking = false;
-            });
-        };
-        requestAnimationFrame(stepFn);
-    }
-
-    function applyEmergencyShrink(logo, links){
-        // fallback to continuous shrink (keeps reducing until visible or min reached)
-        continuousShrink(logo, links);
-    }
-
-    function apply(){
-        const topbar = document.querySelector('.topbar');
-        const links = document.querySelector('.topbar-links');
+    function applyLogoFade(){
         const logo = document.getElementById(LOGO_ID);
-        if(!topbar || !links || !logo) return;
-        saveOrig(logo);
-
-        const contactsHidden = contactsOffscreen(links, 3);
-        console.debug('topbar-logo: apply check', { contactsHidden, logoWidth: Math.round(logo.getBoundingClientRect().width) });
-
-        if(!contactsHidden){
-            restoreLogo(logo);
-            return;
-        }
-
-        // immediately switch to short logo for maximum available space
-        if(logo.getAttribute('src') !== SHORT_SRC){
-            console.debug('topbar-logo: switching to short logo');
-            logo.setAttribute('src', SHORT_SRC);
-        }
-
-        const allowed = computeAllowedWidth(logo, links, 3);
-        console.debug('topbar-logo: allowed width', allowed);
-
-        if(allowed < MIN_SHOW){
-            hideLogo(logo);
-            return;
-        }
-
-        // set to allowed width — CSS transition will animate it
-        logo.style.display = '';
-        const origWidth = parseInt(_orig.widthAttr) || Math.round(logo.getBoundingClientRect().width) || 185;
-        const target = Math.min(allowed, origWidth);
-        logo.style.width = target + 'px';
-
-        // if still overlapping after setting the width, shrink immediately
-        if(contactsOffscreen(links,3)) {
-            console.debug('topbar-logo: immediate extra shrink');
-            applyEmergencyShrink(logo, links);
+        const links = document.querySelector(LINKS_SELECTOR);
+        // allow recovery even if logo is missing (logo may have been removed)
+        if(!links) return;
+        ensureContactsRight(links);
+        if(logo && !logo.style.transition) logo.style.transition = 'opacity 0.28s ease';
+        if(contactsOffscreen(links)){
+            // fade out, then remove from DOM to prevent further layout overflow
+            if(logo){
+                logo.style.opacity = '0';
+                // after transition, remove and keep backup
+                const onEnd = (e)=>{
+                    if(e && e.propertyName && e.propertyName!=='opacity') return;
+                    logo.removeEventListener('transitionend', onEnd);
+                    try{
+                        if(!window._logoBackup){
+                            window._logoBackup = { outerHTML: logo.outerHTML, parentSelector: '.topbar' };
+                        }
+                        logo.remove();
+                    }catch(e){}
+                };
+                logo.addEventListener('transitionend', onEnd);
+                // fallback
+                setTimeout(()=>{ if(document.getElementById(LOGO_ID)) { try{ if(!window._logoBackup) window._logoBackup = { outerHTML: logo.outerHTML, parentSelector: '.topbar' }; logo.remove(); }catch(e){} } }, 350);
+            }
+        } else {
+            // ensure logo exists and is visible
+            if(!document.getElementById(LOGO_ID) && window._logoBackup){
+                try{
+                    const parent = document.querySelector(window._logoBackup.parentSelector) || document.body;
+                    // insert before links if possible
+                    const linksEl = parent.querySelector(LINKS_SELECTOR);
+                    const temp = document.createElement('div'); temp.innerHTML = window._logoBackup.outerHTML.trim();
+                    const newLogo = temp.firstChild;
+                    if(linksEl) parent.insertBefore(newLogo, linksEl);
+                    else parent.appendChild(newLogo);
+                    // ensure visible
+                    newLogo.style.opacity = '0';
+                    if(!newLogo.style.transition) newLogo.style.transition = 'opacity 0.28s ease';
+                    requestAnimationFrame(()=> newLogo.style.opacity = '1');
+                    // clear backup
+                    window._logoBackup = null;
+                }catch(e){}
+            } else if(document.getElementById(LOGO_ID)){
+                const cur = document.getElementById(LOGO_ID);
+                cur.style.opacity = '1';
+            }
         }
     }
 
-    let _t;
-    function schedule(){ clearTimeout(_t); _t = setTimeout(apply, 60); }
+    const schedule = () => { clearTimeout(window._logoFadeT); window._logoFadeT = setTimeout(applyLogoFade, 70); };
     window.addEventListener('resize', schedule);
-    document.addEventListener('DOMContentLoaded', apply);
-    window.addEventListener('load', apply);
-    try{ const ro = new ResizeObserver(schedule); const tb = document.querySelector('.topbar'); const tl = document.querySelector('.topbar-links'); if(tb) ro.observe(tb); if(tl) ro.observe(tl);}catch(e){}
-    try{ const tl = document.querySelector('.topbar-links'); if(tl){ tl.querySelectorAll('img').forEach(img => img.addEventListener('load', schedule)); const mo = new MutationObserver(schedule); mo.observe(tl, {childList: true, subtree: true, attributes: true}); }}catch(e){}
-    // initial
+    window.addEventListener('load', schedule);
+    document.addEventListener('DOMContentLoaded', schedule);
+    try{ const ro = new ResizeObserver(schedule); const tb = document.querySelector('.topbar'); const tl = document.querySelector(LINKS_SELECTOR); if(tb) ro.observe(tb); if(tl) ro.observe(tl);}catch(e){}
     schedule();
 })();
-
