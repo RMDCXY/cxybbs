@@ -1,0 +1,227 @@
+@font-face {
+    font-family: 'Smileysans';
+    src: url('../font/SmileySans.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('../img/pc.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+    body {
+        background-image: url('../img/mob.png');
+    }
+}
+
+.topbar {
+    width: 100%;
+    height: 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px) saturate(120%);
+    -webkit-backdrop-filter: blur(20px) saturate(120%);
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+    font-size: 20px;
+    color: #222;
+}
+
+#topbar-logo {
+    transition: width 150ms ease, height 150ms ease, opacity 150ms ease;
+    height: auto;
+    max-height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+.topbar-links {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 35px;
+    
+}
+
+.topbar a {
+    background: transparent;
+    color: inherit;
+    box-shadow: none;
+    padding: 0;
+    margin: 0 3px 0 0;
+    border-radius: 0;
+}
+
+.topbar a:last-child {
+    margin-right: 0;
+}
+
+.topbar a:hover,
+.topbar a:focus {
+    background: transparent;
+    color: inherit;
+    box-shadow: none;
+    text-decoration: none;
+}
+
+a{
+    display: inline-block;
+    margin: 4px 6px 4px 0;
+    padding: 4px 10px;
+    color: #fff;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+    border: none;
+    outline: none;
+    cursor: pointer
+}
+
+button{
+    background: #00000000;
+    border: none;
+    cursor: pointer
+}
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 32px 0 16px 0;
+    gap: 8px;
+}
+
+.footer a {
+    background: transparent;
+    color: #007cff;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0 8px;
+    margin: 0 2px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.2s;
+}
+
+.footer a:hover,
+.footer a:focus {
+    color: #003cff;
+    text-decoration: underline;
+    background: transparent;
+    box-shadow: none;
+}
+
+main {
+    color: azure;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    margin-top: 90px;
+    
+}
+
+#avatar{
+    max-width: 80%;
+    height: auto;
+}
+
+/* 桌面端：缩小头像显示，手机端保持原样 */
+@media (min-width: 769px) {
+    #avatar {
+        max-width: 450px;
+    }
+}
+
+main > a,
+main article a {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 10px;
+    border-radius: 12px;
+    vertical-align: middle;
+    transition: transform 240ms cubic-bezier(.2,.9,.2,1),
+                background 300ms ease,
+                box-shadow 300ms ease;
+}
+
+main > a img,
+main article a img,
+main article a svg {
+    display: block;
+    flex-shrink: 0;
+    width: auto;
+    max-height: 46px; /* normalize icon height */
+}
+
+main > a span,
+main article a span {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    /* do not animate transform (prevents jitter when parent also animates) */
+    transition: color 220ms ease, filter 220ms ease;
+    transform: translateY(2px); /* optical nudge (static) */
+}
+
+/* hover: gentle gradient + slight scale */
+main > a:hover,
+main article a:hover {
+    transform: translateY(-4px) scale(1.04);
+}
+
+@media (max-width: 420px) {
+    main > a span,
+    main article a span {
+        transform: translateY(1px);
+    }
+
+    main > a img,
+    main article a img,
+    main article a svg {
+        max-height: 38px;
+    }
+}
+
+h4 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+h3{
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+#friend{
+    font-size: 20px;
+    color: #007bff;
+    font-family: 'Smileysans';
+}
+
+span{
+    font-family: 'Smileysans';
+    color: #007bff;
+    font-size: 30px;
+}
