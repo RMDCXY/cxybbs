@@ -95,10 +95,7 @@ function qq(){
     
 }
 
-// 顶栏 logo 的自动变更逻辑已移除。
-// 顶栏 logo 的自动变更逻辑已移除。
-
-// 简化版：当联系方式被挤出屏幕时让 logo 渐隐，空间足够时渐显；保证联系方式靠右。
+//logo变化逻辑
 (function(){
     const LOGO_ID = 'topbar-logo';
     const LINKS_SELECTOR = '.topbar-links';
@@ -116,6 +113,17 @@ function qq(){
         return children.some(c => c.getBoundingClientRect().right > window.innerWidth - GAP);
     }
 
+    function computeAvailableForLogo(){
+        const topbar = document.querySelector('.topbar');
+        const links = document.querySelector(LINKS_SELECTOR);
+        if(!topbar || !links) return 0;
+        try{
+            const tbRect = topbar.getBoundingClientRect();
+            const linksRect = links.getBoundingClientRect();
+            return Math.max(0, Math.floor(linksRect.left - GAP - tbRect.left));
+        }catch(e){ return 0; }
+    }
+
     function applyLogoFade(){
         const logo = document.getElementById(LOGO_ID);
         const links = document.querySelector(LINKS_SELECTOR);
@@ -125,23 +133,27 @@ function qq(){
         if(logo && !logo.style.transition) logo.style.transition = 'opacity 0.28s ease';
         if(contactsOffscreen(links)){
             if(logo){
+                const curW = Math.round(logo.getBoundingClientRect().width || 0) || (parseInt(logo.getAttribute('width'))||185);
                 logo.style.opacity = '0';
                 const onEnd = (e)=>{
                     if(e && e.propertyName && e.propertyName!=='opacity') return;
                     logo.removeEventListener('transitionend', onEnd);
                     try{
                         if(!window._logoBackup){
-                            window._logoBackup = { outerHTML: logo.outerHTML, parentSelector: '.topbar' };
+                            window._logoBackup = { outerHTML: logo.outerHTML, parentSelector: '.topbar', width: curW };
                         }
                         logo.remove();
                     }catch(e){}
                 };
                 logo.addEventListener('transitionend', onEnd);
-                setTimeout(()=>{ if(document.getElementById(LOGO_ID)) { try{ if(!window._logoBackup) window._logoBackup = { outerHTML: logo.outerHTML, parentSelector: '.topbar' }; logo.remove(); }catch(e){} } }, 350);
+                setTimeout(()=>{ if(document.getElementById(LOGO_ID)) { try{ if(!window._logoBackup) window._logoBackup = { outerHTML: logo.outerHTML, parentSelector: '.topbar', width: curW }; logo.remove(); }catch(e){} } }, 350);
             }
         } else {
             if(!document.getElementById(LOGO_ID) && window._logoBackup){
                 try{
+                    const avail = computeAvailableForLogo();
+                    const need = window._logoBackup.width || 185;
+                    if(avail < need) return;
                     const parent = document.querySelector(window._logoBackup.parentSelector) || document.body;
                     const linksEl = parent.querySelector(LINKS_SELECTOR);
                     const temp = document.createElement('div'); temp.innerHTML = window._logoBackup.outerHTML.trim();
@@ -167,8 +179,3 @@ function qq(){
     try{ const ro = new ResizeObserver(schedule); const tb = document.querySelector('.topbar'); const tl = document.querySelector(LINKS_SELECTOR); if(tb) ro.observe(tb); if(tl) ro.observe(tl);}catch(e){}
     schedule();
 })();
-
-
-
-
-

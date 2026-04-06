@@ -355,6 +355,17 @@ function qq() {
         return children.some(c => c.getBoundingClientRect().right > window.innerWidth - GAP);
     }
 
+    function computeAvailableForLogo(){
+        const topbar = document.querySelector('.topbar');
+        const links = document.querySelector(LINKS_SELECTOR);
+        if(!topbar || !links) return 0;
+        try{
+            const tbRect = topbar.getBoundingClientRect();
+            const linksRect = links.getBoundingClientRect();
+            return Math.max(0, Math.floor(linksRect.left - GAP - tbRect.left));
+        }catch(e){ return 0; }
+    }
+
     function applyLogoFade(){
         const logo = document.getElementById(LOGO_ID);
         const links = document.querySelector(LINKS_SELECTOR);
@@ -365,6 +376,8 @@ function qq() {
         if(contactsOffscreen(links)){
             // fade out, then remove from DOM to prevent further layout overflow
             if(logo){
+                // capture current width for later restoration requirement
+                const curW = Math.round(logo.getBoundingClientRect().width || 0) || (parseInt(logo.getAttribute('width'))||185);
                 logo.style.opacity = '0';
                 // after transition, remove and keep backup
                 const onEnd = (e)=>{
@@ -372,19 +385,23 @@ function qq() {
                     logo.removeEventListener('transitionend', onEnd);
                     try{
                         if(!window._logoBackup){
-                            window._logoBackup = { outerHTML: logo.outerHTML, parentSelector: '.topbar' };
+                            window._logoBackup = { outerHTML: logo.outerHTML, parentSelector: '.topbar', width: curW };
                         }
                         logo.remove();
                     }catch(e){}
                 };
                 logo.addEventListener('transitionend', onEnd);
                 // fallback
-                setTimeout(()=>{ if(document.getElementById(LOGO_ID)) { try{ if(!window._logoBackup) window._logoBackup = { outerHTML: logo.outerHTML, parentSelector: '.topbar' }; logo.remove(); }catch(e){} } }, 350);
+                setTimeout(()=>{ if(document.getElementById(LOGO_ID)) { try{ if(!window._logoBackup) window._logoBackup = { outerHTML: logo.outerHTML, parentSelector: '.topbar', width: curW }; logo.remove(); }catch(e){} } }, 350);
             }
         } else {
             // ensure logo exists and is visible
             if(!document.getElementById(LOGO_ID) && window._logoBackup){
                 try{
+                    // only restore if there is enough room to show the logo at its original width
+                    const avail = computeAvailableForLogo();
+                    const need = window._logoBackup.width || 185;
+                    if(avail < need) return;
                     const parent = document.querySelector(window._logoBackup.parentSelector) || document.body;
                     // insert before links if possible
                     const linksEl = parent.querySelector(LINKS_SELECTOR);
