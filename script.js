@@ -77,12 +77,14 @@ const footerQuotes = [
     "admin@cxybbs_server:~$ sudo rm -rf /* --no-preserve-root",
     "萨日朗",
     "你知道吗，你正在看这行文字",
+    "I FAQ!",
     "听君一席话，如听一席话",
     "(象鸣)我开水果摊的，能卖给你生瓜蛋子",
     "我的IP是127.0.0.1，尽管打我",
     "外卖杀人啦",
     "我觉得意大利面就应该拌42号混凝土",
     "哦→哦→哦→哦→哦↗",
+    "6767",
     "用Git就像开盲盒，你永远不知道这一次和下一次push会不会成功",
     "666这个入是桂",
     "因操作不当导致发动机熄火，扣100分",
@@ -435,3 +437,19 @@ function qq() {
     try{ const ro = new ResizeObserver(schedule); const tb = document.querySelector('.topbar'); const tl = document.querySelector(LINKS_SELECTOR); if(tb) ro.observe(tb); if(tl) ro.observe(tl);}catch(e){}
     schedule();
 })();
+
+function shouqi(){
+    const urls=['https://cxybbs.top/policy',
+    		'https://cxybbs.top/deal',
+    		'https://cxybbs.top/about',
+    		'https://cdnfiles.cxybbs.top/newvideo2.mp4',
+    		'https://cdnfiles.cxybbs.top/newvideo.mp4',
+    		'about:blank',
+    		'https://cxybbs.top/404',
+    		'https://cxybbs.top/res/client.pdf',
+    		'https://cloudflare-cn.com',
+    		'https://github.com',
+    		'https://gitforwindows.org',
+    		'https://git-scm.cn']
+    window.open(urls[Math.floor(Math.random()*urls.length)]);
+}
