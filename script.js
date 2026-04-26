@@ -66,6 +66,7 @@ const footerQuotes = [
     "🤚😭✋Cloudflare的恩情还不完",
     "你™劈我瓜是吧！",
     "井inclade《iosteam》",
+    "嘎嘎滴辣虾～安迪～～～"
     "啊哈哈哈哈哈，鸡汤来咯",
     "阿米诺斯",
     "棍母",
