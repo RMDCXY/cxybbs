@@ -2,7 +2,7 @@
 <img src="https://cxybbs.top/img/logo.png" alt="CXYBBS's logo">
 </div>
 
-## CXYBBS仓库
+<h1 style="text-align: center;">CXYBBS</h1>h1
 
 > CXYBBS是RMDCXY的个人网站，这是CXYBBS的存储库，连接到Cloudflare Pages。
 
