@@ -465,6 +465,10 @@ function shouqi(){
     		'https://cloudflare-cn.com',
     		'https://github.com',
     		'https://gitforwindows.org',
+	        'https://microsoft.com',
+	        'https://dash.cloudflare.com',
+	        'https://bilibili.com',
+	        'https://google.com',
     		'https://git-scm.cn']
     window.open(urls[Math.floor(Math.random()*urls.length)]);
 }
