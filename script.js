@@ -69,6 +69,7 @@ const footerQuotes = [
     "比比拉布",
     "咕咕嘎嘎！",
     "让我们把所有元素综合起来！",
+    "会敲命令行了还要什么Github Desktop啊",
     "🤚😭✋Cloudflare的恩情还不完",
     "你™劈我瓜是吧！",
     "不豪，bugjump发力了",
