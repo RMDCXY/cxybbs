@@ -16,7 +16,6 @@ if (isEdgeWebView2() || isMobile()) {
 }
 
 const footerQuotes = [
-    "你知道吗，左上角logo连续点击6次有惊喜",
     "枪炮是不长眼的，坦克是没有后视镜的",
     "114514",
     "最近换新手机了，比之前的流畅多了，那旧的要怎么处理呢？",
@@ -52,6 +51,7 @@ const footerQuotes = [
     "你知道吗，每当你呼吸了60秒就减少了1分钟寿命",
     "其实底部的网站运行时间是从域名注册时间开始算的...",
     "用dick三天赚50万",
+    "少习习真的牛逼吗？",
     "我要→验↑牌↘",
     "构建更美好的互联网",
     "help build a better internet",
@@ -66,6 +66,7 @@ const footerQuotes = [
     " ",
     "服务器繁忙，请稍后再试。",
     "哥们，你这瓜多少钱一斤",
+    "啪的一下，很快啊",
     "比比拉布",
     "咕咕嘎嘎！",
     "让我们把所有元素综合起来！",
@@ -106,6 +107,50 @@ const footerQuotes = [
     "因操作不当导致发动机熄火，扣100分",
     "他奶奶滴，给我玩阴的是吧！"
 ];
+
+// 修复锚点滚动到卡片顶部
+function scrollToSectionCardByHash() {
+    if (location.hash) {
+        const id = decodeURIComponent(location.hash.substring(1));
+        const el = document.getElementById(id);
+        if (el && el.classList.contains('section-card')) {
+            // 距离顶部滚动，考虑顶部栏高度
+            const topbar = document.querySelector('.topbar');
+            const offset = topbar ? topbar.offsetHeight : 0;
+            const rect = el.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const targetY = rect.top + scrollTop - offset - 10; // 额外留10px间距
+            window.scrollTo({ top: targetY, behavior: 'smooth' });
+
+            // 添加闪烁效果（0.8s且只闪一次）
+            el.classList.remove('section-flash'); // 先移除，防止连续触发无效
+            void el.offsetWidth;
+            el.classList.add('section-flash');
+            setTimeout(() => {
+                el.classList.remove('section-flash');
+            }, 800); // 0.8s
+        }
+    }
+}
+
+window.addEventListener('hashchange', scrollToSectionCardByHash);
+window.addEventListener('DOMContentLoaded', function() {
+    setTimeout(scrollToSectionCardByHash, 0);
+});
+// section-card 闪烁效果样式（0.8s且只闪一次，降低强度）
+const style = document.createElement('style');
+style.textContent = `
+.section-flash {
+    animation: sectionFlashAnim 0.8s 1;
+}
+@keyframes sectionFlashAnim {
+    0% { box-shadow: 0 0 0 0 #fff, 0 0 0 0 #2196f3; }
+    20% { box-shadow: 0 0 8px 2px #2196f3, 0 0 0 0 #fff; }
+    50% { box-shadow: 0 0 0 0 #fff, 0 0 8px 2px #2196f3; }
+    80% { box-shadow: 0 0 8px 2px #2196f3, 0 0 0 0 #fff; }
+    100% { box-shadow: 0 0 0 0 #fff, 0 0 0 0 #2196f3; }
+}`;
+document.head.appendChild(style);
 
 // 打字机效果
 (function () {

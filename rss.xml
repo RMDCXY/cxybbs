@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+  <channel>
+    <title>CXYBBS</title>
+    <link>https://cxybbs.top</link>
+    <description>CXYBBS是RMDCXY的个人网站，展示了RMDCXY的所有项目，欢迎您的访问^_^</description>
+    <language>zh-cn</language>
+
+    <item>
+      <title>用0.5b的模型AI编程</title>
+      <link>https://cxybbs.top/#0.5b_aicoding</link>
+      <description>这是一期水视频，展示了使用低参数量的0.5b AI模型编写代码的效果。</description>
+      <guid>https://cxybbs.top/#0.5b_aicoding</guid>
+    </item>
+
+    <item>
+      <title>将HTML打包成应用程序</title>
+      <link>https://cxybbs.top/#html2app</link>
+      <description>本期教程以最简单的方法将HTML打包为应用程序，小白看了也能学会。</description>
+      <guid>https://cxybbs.top/#html2app</guid>
+    </item>
+
+    <item>
+      <title>个人项目·24DotTool</title>
+      <link>https://cxybbs.top/#24dt</link>
+      <description>24DotTool是一个计算24点数学游戏解法的工具，它基于暴力破解算法开发，所以可以快速破解出所有解法。点击“我要下载”可直接免费下载，历史版本提取码24dt。</description>
+      <guid>https://cxybbs.top/#24dt</guid>
+    </item>
+
+    <item>
+      <title>告别网盘·伪直链</title>
+      <link>https://cxybbs.top/#falsezl</link>
+      <description>本期教程可以为您的文件创建一个伪直链，实现跳转链接直接下载，并且完全免费。</description>
+      <guid>https://cxybbs.top/#falsezl</guid>
+    </item>
+
+    <item>
+      <title>Scratch作品制作成网站</title>
+      <link>https://cxybbs.top/#scr2site</link>
+      <description>本期教程可以将您的Scratch作品免费制作成一个网站，让更多人可以更快速、更方便地体验您的作品！</description>
+      <guid>https://cxybbs.top/#scr2site</guid>
+    </item>
+
+    <item>
+      <title>Python打包成应用程序</title>
+      <link>https://cxybbs.top/#py2app</link>
+      <description>本期教程可以将您的Python项目打包成一个带安装程序的应用程序，让您的项目更好分享给别人体验！</description>
+      <guid>https://cxybbs.top/#py2app</guid>
+    </item>
+
+    <item>
+      <title>Scratch打包成应用程序</title>
+      <link>https://cxybbs.top/#scr2app</link>
+      <description>本期教程可以将您的Scratch项目打包成一个带安装程序的应用程序，让您的项目显得更高级！</description>
+      <guid>https://cxybbs.top/#scr2app</guid>
+    </item>
+  </channel>
+</rss>
