@@ -207,6 +207,14 @@ a{
     transition: box-shadow 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease;
 }
 
+.section-card.no-img {
+    display: block;
+    padding-left: 22px;
+}
+.section-card.no-img .section-info {
+    padding-left: 0;
+}
+
 .section-card:hover {
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
     backdrop-filter: blur(18px) saturate(120%);
