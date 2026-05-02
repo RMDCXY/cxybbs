@@ -101,8 +101,9 @@ const footerQuotes = [
     "我觉得意大利面就应该拌42号混凝土",
     "哦→哦→哦→哦→哦↗",
     "你是故意找茬是不是，你要不要吧",
+    "Six seven 🤚↑✋↓",
     "6767",
-    "用Git就像开盲盒，你永远不知道这一次和下一次push会不会成功",
+    "Git用HTTPS就像开盲盒，你永远不知道这一次和下一次push会不会成功",
     "666这个入是桂",
     "因操作不当导致发动机熄火，扣100分",
     "他奶奶滴，给我玩阴的是吧！"
@@ -515,6 +516,9 @@ function shouqi(){
 	        'https://dash.cloudflare.com',
 	        'https://bilibili.com',
 	        'https://google.com',
-    		'https://git-scm.cn']
+    		'https://git-scm.cn',
+    		'chrome://dino',
+    		'edge://surf',
+    		'https://guthib.com']
     window.open(urls[Math.floor(Math.random()*urls.length)]);
 }

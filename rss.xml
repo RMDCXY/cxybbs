@@ -56,10 +56,16 @@
     </item>
 
     <item>
-      <title>专栏#01 - 大容量存储设备拉史说</title>
+      <title>专栏#01 - 一幅写真</title>
       <link>https://cxybbs.top/articles/01</link>
       <description>本专栏撰写于2026年5月2日。</description>
       <guid>https://cxybbs.top/articles/01</guid>
     </item>
+
+    <item>
+      <title>专栏#02 - 大容量存储设备拉史说</title>
+      <link>https://cxybbs.top/articles/02</link>
+      <description>本专栏撰写于2026年5月2日。</description>
+      <guid>https://cxybbs.top/articles/02</guid>                              </item>
   </channel>
 </rss>
