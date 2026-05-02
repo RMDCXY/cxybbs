@@ -3,9 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>CXYBBS</title>
+    <title>大容量存储设备拉史说 - CXYの专栏</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/article.css">
     <!--图标-->
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -26,7 +27,18 @@
                     width="35"></a>
         </div>
     </div>
-    
+    <!--正文-->
+    <h1 class="gradient-heading">大容量存储设备拉史说</h1>
+    <h4><span class="nolg">🕓</span>撰写于 2026年5月2日</h4>
+    <div id="article-markdown" class="article-markdown"></div>
+    <textarea id="article-markdown-source" hidden>
+🗑🧹😅 💩🤖🤓 Android文件夹是清完就拉的
+🪟🤫💩✋ 🤔 System Volume Infomation是偷摸着拉的(还不肯亲自承认)
+💩💩🍎😏💩💩 🤢.DS_Store是到处都要拉的
+🤚😭✋唯一的救星只有Linux了！
+    </textarea>
+
+    <!--改标题！！！！-->
     <footer class="footer">
         <span style="color:#6f6f6f">Copyright (C) RMDCXY
             <script type="text/javascript">document.write(new Date().getFullYear());</script>.All rights reserved.
@@ -41,6 +53,26 @@
         </div>
     </footer>
     <script src="/a.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const renderMarkdown = false;
+            const source = document.getElementById('article-markdown-source');
+            const target = document.getElementById('article-markdown');
+            if (!source || !target) return;
+
+            const markdownText = source.value || source.textContent || '';
+            const renderer = window.marked?.parse || window.marked;
+
+            if (renderMarkdown && typeof renderer === 'function') {
+                target.innerHTML = renderer(markdownText.trim());
+                return;
+            }
+
+            target.textContent = markdownText.trim();
+            target.style.whiteSpace = 'pre-wrap';
+        });
+    </script>
 </body>
 
 </html>

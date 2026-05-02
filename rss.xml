@@ -54,5 +54,12 @@
       <description>本期教程可以将您的Scratch项目打包成一个带安装程序的应用程序，让您的项目显得更高级！</description>
       <guid>https://cxybbs.top/#scr2app</guid>
     </item>
+
+    <item>
+      <title>专栏#01 - 大容量存储设备拉史说</title>
+      <link>https://cxybbs.top/articles/01</link>
+      <description>本专栏撰写于2026年5月2日。</description>
+      <guid>https://cxybbs.top/articles/01</guid>
+    </item>
   </channel>
 </rss>
