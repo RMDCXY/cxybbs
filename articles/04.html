@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>一幅写真 - CXYの专栏</title>
+    <title>如何0成本将你的Scratch项目制作成网站？ - CXYの专栏</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/article.css">
@@ -28,27 +28,36 @@
         </div>
     </div>
     <!--正文-->
-    <h1 class="gradient-heading">一幅写真</h1>
-    <h4><span class="nolg">🕓</span>撰写于 2026年5月2日</h4>
+    <h1 class="gradient-heading">如何0成本将你的Scratch项目制作成网站？</h1>
+    <h4><span class="nolg">🕓</span>撰写于 2025年1月27日</h4>
     <div id="article-markdown" class="article-markdown"></div>
     <textarea id="article-markdown-source" hidden>
-Internal server error(Error code 500)
-Visit cloudflare.com for more information.
-2026-1-23 12:34:56 UTC
-     💻             ☁                    💽
-     ✅             ❌                   ✅
-    You     Amsterdom  example.com
-Browser  Cloudflare          Host
-Working      Error           Working
--------------^--------------------
-What happened?
-There is an internal server error on Cloudflare's network.
-What can I do?
-Please try again in a few minutes.
-----------------------------------
-Cloudflare Ray ID: 114514homo917813
-Your IP: Click to reveal
-Performance & Security by Cloudflare
+---
+
+<img src="/res/scrtosite.jpg" width="45%">
+
+> 本期视频仅发布于哔哩哔哩，点击[此处](https://www.bilibili.com/video/BV1pWfDYiEge/)跳转视频。
+
+> 点击此处前往视频中演示的示例站点。[站点1](https://cxytest123.pages.dev) [站点2（截止2025年1月26日）](https://test.cxydemo.us.kg)
+
+1.打包成形。
+
+打包器使用[TurboWarp Packager](https://packager.turbowarp.org/)
+
+2.注册账户。
+
+点击前往[Cloudflare](https://dash.cloudflare.com)注册账户。
+
+*.拓展 自定义域名
+
+免费us.kg域名注册并托管教程：
+
+[永久免费域名！最新注册教程，无限免费续期，100%成功，可托管CloudFlare，值得抢注！！ | 零度解说](https://www.bilibili.com/video/BV1AjiBYVEoF/)
+
+[2024最新免费域名教程，可托管CF，零失败率，解决所有坑点。](https://www.bilibili.com/video/BV1by411B7Ko/)
+
+> 感谢您对我的支持与观看！
+
     </textarea>
 
     <!--改标题！！！！-->
@@ -69,7 +78,7 @@ Performance & Security by Cloudflare
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const renderMarkdown = false;
+            const renderMarkdown = true;
             const source = document.getElementById('article-markdown-source');
             const target = document.getElementById('article-markdown');
             if (!source || !target) return;

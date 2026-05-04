@@ -7,6 +7,13 @@
     <language>zh-cn</language>
 
     <item>
+      <title>[新]文件直链下载！永久有效！不限速！</title>
+      <link>https://cxybbs.top/#new_directlink</link>
+      <description>告别传统网盘烦恼，真直链！免费！永久有效</description>
+      <guid>https://cxybbs.top/#new_directlink</guid>
+    </item>
+
+    <item>
       <title>用0.5b的模型AI编程</title>
       <link>https://cxybbs.top/#0.5b_aicoding</link>
       <description>这是一期水视频，展示了使用低参数量的0.5b AI模型编写代码的效果。</description>
@@ -66,6 +73,21 @@
       <title>专栏#02 - 大容量存储设备拉史说</title>
       <link>https://cxybbs.top/articles/02</link>
       <description>本专栏撰写于2026年5月2日。</description>
-      <guid>https://cxybbs.top/articles/02</guid>                              </item>
+      <guid>https://cxybbs.top/articles/02</guid>
+    </item>
+
+    <item>
+      <title>专栏#03 - 将Python项目打包成带安装程序的软件？</title>
+      <link>https://cxybbs.top/articles/03</link>
+      <description>本专栏撰写于2024年11月12日。</description>
+      <guid>https://cxybbs.top/articles/03</guid>
+    </item>
+
+    <item>
+      <title>专栏#04 - 如何0成本将你的Scratch项目制作成网站？</title>
+      <link>https://cxybbs.top/articles/04</link>
+      <description>本专栏撰写于2025年1月27日。</description>
+      <guid>https://cxybbs.top/articles/04</guid>
+    </item>
   </channel>
 </rss>
