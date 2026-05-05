@@ -179,3 +179,11 @@ function qq(){
     try{ const ro = new ResizeObserver(schedule); const tb = document.querySelector('.topbar'); const tl = document.querySelector(LINKS_SELECTOR); if(tb) ro.observe(tb); if(tl) ro.observe(tl);}catch(e){}
     schedule();
 })();
+
+//废弃的返回按钮方案，未来计划重新启用
+/*
+function ret(){
+  if(history.length>1) history.back();
+  else{ window.close(); setTimeout(()=>{window.closed||(window.location.href="../")},50); }
+}
+ */

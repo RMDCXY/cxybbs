@@ -501,14 +501,14 @@ function qq() {
 })();
 
 function shouqi(){
-    const urls=['https://cxybbs.top/policy',
-    		'https://cxybbs.top/deal',
-    		'https://cxybbs.top/about',
+    const urls=['/policy',
+    		'/deal',
+    		'/about',
     		'https://cdnfiles.cxybbs.top/newvideo2.mp4',
     		'https://cdnfiles.cxybbs.top/newvideo.mp4',
     		'about:blank',
-    		'https://cxybbs.top/404',
-    		'https://cxybbs.top/res/client.pdf',
+    		'/404',
+    		'/res/client.pdf',
     		'https://cloudflare-cn.com',
     		'https://github.com',
     		'https://gitforwindows.org',
