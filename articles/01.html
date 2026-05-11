@@ -67,25 +67,7 @@ Performance & Security by Cloudflare
     </footer>
     <script src="/a.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const renderMarkdown = false;
-            const source = document.getElementById('article-markdown-source');
-            const target = document.getElementById('article-markdown');
-            if (!source || !target) return;
-
-            const markdownText = source.value || source.textContent || '';
-            const renderer = window.marked?.parse || window.marked;
-
-            if (renderMarkdown && typeof renderer === 'function') {
-                target.innerHTML = renderer(markdownText.trim());
-                return;
-            }
-
-            target.textContent = markdownText.trim();
-            target.style.whiteSpace = 'pre-wrap';
-        });
-    </script>
+    <script src="md.js" render-md="false"></script>
 </body>
 
 </html>

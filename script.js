@@ -53,14 +53,17 @@ const footerQuotes = [
     "用dick三天赚50万",
     "少习习真的牛逼吗？",
     "我要→验↑牌↘",
+    "能忍住给所有Drag都打成Tap的是这个👍",
     "构建更美好的互联网",
     "help build a better internet",
+    "？！Termux！？",
     "跨平台我就选Electron！",
     "？",
     "不知道写啥了，就写这句吧",
     "原神？启动！",
     "AMD YES!",
     "Github·Build from here!",
+    "一个手机，一个Termux，他能创建10个提交",
     "开水一百度，直角90度，所以直角没烧开",
     "Namesilo牛逼",
     " ",
@@ -79,12 +82,16 @@ const footerQuotes = [
     "啊哈哈哈哈哈，鸡汤来咯",
     "阿米诺斯",
     "棍母",
+    "我去不早说",
     "你是典型的安卓人",
     "~$: node -c script.js",
     "⚠你已达到每月聊天消息配额。升级到Github Copilot Pro(30天免费试用版)，或等待你的限额续订。",
     "SSH牛逼！",
     "震撼首发",
     "Hello,world!",
+    "！？Ubuntu？！",
+    "鸽游牛逼",
+    "依旧Vibe coding",
     "Google牛逼",
     "admin@cxybbs_server:~$ sudo rm -rf /* --no-preserve-root",
     "萨日朗",
@@ -234,7 +241,7 @@ document.head.appendChild(style);
 
     // 定义要排除渐变的字符列表（直接按字符列出，不使用正则）
     // 列表中的字符会被包裹为 .no-gradient，其他字符将正常使用渐变
-    const EXCLUDE_GRADIENT_CHARS = new Set(['🤚', '😭', '✋', '⚠', '☁']);
+    const EXCLUDE_GRADIENT_CHARS = new Set(['🤚', '😭', '✋', '⚠', '☁','👍']);
 
     function escapeHTML(s) {
         return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
