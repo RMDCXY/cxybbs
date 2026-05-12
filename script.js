@@ -529,3 +529,110 @@ function shouqi(){
     		'https://guthib.com']
     window.open(urls[Math.floor(Math.random()*urls.length)]);
 }
+
+// 瀑布流布局
+(function() {
+    'use strict';
+    
+    let resizeTimer = null;
+    
+    function initMasonry() {
+        const container = document.querySelector('.sections');
+        if (!container) return;
+        
+        const isMobile = window.innerWidth < 900;
+        
+        // 移动端：清除所有样式，恢复文档流
+        if (isMobile) {
+            const cards = document.querySelectorAll('.section-card');
+            cards.forEach(card => {
+                card.style.position = '';
+                card.style.top = '';
+                card.style.left = '';
+                card.style.width = '';
+                card.style.marginBottom = '';
+                card.style.display = '';
+                card.style.gridTemplateColumns = '';
+            });
+            container.style.height = '';
+            return;
+        }
+        
+        // 电脑端：瀑布流布局
+        const cards = Array.from(document.querySelectorAll('.section-card'));
+        if (cards.length === 0) return;
+        
+        const gap = 32;
+        
+        // 重置所有卡片样式，确保高度计算正确
+        cards.forEach(card => {
+            // 有图片的卡片：grid 两列
+            if (!card.classList.contains('no-img')) {
+                card.style.display = 'grid';
+                card.style.gridTemplateColumns = '110px 1fr';
+            } else {
+                // 无图片卡片：grid 单列，保持内容宽度
+                card.style.display = 'grid';
+                card.style.gridTemplateColumns = '1fr';
+            }
+            card.style.alignItems = 'start';
+            card.style.position = 'absolute';
+            card.style.marginBottom = '0';
+        });
+        
+        // 获取容器宽度和列宽
+        const containerWidth = container.clientWidth;
+        const colWidth = (containerWidth - gap) / 2;
+        
+        // 先设置宽度，再计算高度
+        cards.forEach(card => {
+            card.style.width = colWidth + 'px';
+        });
+        
+        // 两列高度数组
+        let colHeights = [0, 0];
+        
+        // 逐个放置卡片
+        cards.forEach(card => {
+            let colIndex = colHeights[0] <= colHeights[1] ? 0 : 1;
+            let leftPos = colIndex === 0 ? 0 : colWidth + gap;
+            
+            card.style.top = colHeights[colIndex] + 'px';
+            card.style.left = leftPos + 'px';
+            
+            colHeights[colIndex] += card.offsetHeight + gap;
+        });
+        
+        container.style.height = Math.max(colHeights[0], colHeights[1]) + 'px';
+    }
+    
+    // 执行
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMasonry);
+    } else {
+        initMasonry();
+    }
+    
+    // 防抖重排
+    window.addEventListener('resize', function() {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(initMasonry, 150);
+    });
+    
+    // 图片加载完成后重排
+    const images = document.querySelectorAll('.section-img');
+    let loadedCount = 0;
+    if (images.length > 0) {
+        images.forEach(img => {
+            if (img.complete) {
+                loadedCount++;
+                if (loadedCount === images.length) initMasonry();
+            } else {
+                img.addEventListener('load', () => {
+                    loadedCount++;
+                    if (loadedCount === images.length) initMasonry();
+                });
+            }
+        });
+    }
+})();
