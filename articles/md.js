@@ -34,14 +34,19 @@
     }
 
     function fixStyles(container) {
+        // 只改背景和文字颜色，不动链接
         container.style.backgroundColor = 'transparent';
         container.style.color = 'white';
         
+        // 代码块样式
         var codes = container.querySelectorAll('pre, code');
         codes.forEach(function(code) {
             code.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
             code.style.color = '#e6e6e6';
         });
+        
+        // 关键：不碰任何 a 标签
+        // 你的全局 .section-link 和 a 样式会自然生效
     }
 
     if (document.readyState === 'loading') {

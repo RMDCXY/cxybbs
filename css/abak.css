@@ -40,7 +40,7 @@ rticle-markdown.markdown-body {
 #article-markdown.markdown-body a:visited,
 #article-markdown.markdown-body a:hover,
 #article-markdown.markdown-body a:active {
-    all: inherit !important;
+    all: revert !important;
     background: transparent !important;
     color: inherit !important;
     text-decoration: underline !important;
@@ -50,4 +50,14 @@ rticle-markdown.markdown-body {
     box-shadow: none !important;
     font-weight: inherit !important;
     font-size: inherit !important;
+}
+
+#article-markdown.markdown-body pre,
+#article-markdown.markdown-body code {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+#article-markdown.markdown-body blockquote {
+    border-left-color: #ccc;
+    color: inherit;
 }
