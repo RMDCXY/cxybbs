@@ -180,7 +180,6 @@ a {
     }
 }
 
-/* 电脑端卡片样式 - 绝对定位由 JS 控制 */
 @media (min-width: 900px) {
     .sections {
         position: relative;
