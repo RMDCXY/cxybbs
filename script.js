@@ -303,36 +303,6 @@ async function copy(text) {
     }
 }
 
-document.getElementById("mailbtn").addEventListener("click", function (b) {
-    b.preventDefault();
-    if (confirm("ℹ如果您有安装邮件客户端，点击“确定”即可一键跳转至邮件客户端发送邮件。\n如果您没有安装邮件客户端，请点击“取消”复制邮箱地址手动发送邮件。")) {
-        window.open("mailto:rmdcxypgm@outlook.com");
-    } else {
-        copy("rmdcxypgm@outlook.com")
-    }
-})
-
-function qq() {
-    var ua = navigator.userAgent;
-    var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-    var qqNumber = "3766908125";
-
-    if (isMobile) {
-        // 手机端：尝试唤起QQ应用
-        window.location.href = "mqqapi://card/show_pslcard?src_type=internal&version=1&uin=" + qqNumber + "&card_type=person&source=sharecard";
-    } else {
-        // PC端：使用协议直接添加
-        window.location.href = "tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=" + qqNumber;
-    }
-
-    setTimeout(() => {
-        if (confirm("如果你没有跳转到QQ添加好友，请点击确定直接复制up的QQ号手动添加。")) {
-            copy("3766908125");
-        }
-    }, 1000);
-
-}
-
 function shouqi(){
     const urls=['/policy',
     		'/deal',
