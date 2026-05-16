@@ -154,6 +154,7 @@ main {
 }
 
 main > a,
+.opensource a,
 main article a {
     display: inline-flex;
     align-items: center;
@@ -187,6 +188,7 @@ main article a span {
 
 /* hover: gentle gradient + slight scale */
 main > a:hover,
+.opensource a:hover,
 main article a:hover {
     transform: translateY(-4px) scale(1.04);
 }
@@ -224,4 +226,15 @@ span{
     font-family: 'Smileysans';
     color: #007bff;
     font-size: 30px;
+}
+.opensource {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.opensource h5,a{
+    margin:0;
+    padding:0;
 }
