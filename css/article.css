@@ -35,10 +35,12 @@ h4{
     color: white;
     display: block;
     margin: 10px 25px 40px;
-    padding: 0 4px;
+    padding: 10px;
 }
 .article-markdown h1,
-.article-markdown h2 {
+.article-markdown h2,
+.article-markdown h4,
+.article-markdown h6 {
     all: unset;
     display: block;
     font-weight: bold;
@@ -50,6 +52,9 @@ h4{
 }
 .article-markdown h2 {
     font-size: 1.5em;
+}
+.article-markdown h6{
+    color: white !important;
 }
 /* ===== Markdown reset styles end ===== */
 
@@ -76,8 +81,10 @@ h4{
 }
 
 .article-markdown hr{
-    opacity: 0.8;
+    opacity: 0.6;
+    background: rgb(57, 57, 57) !important;
 }
+
 /* ===== Markdown custom styles end ===== */
 
 .nolg{
