@@ -2,7 +2,7 @@
 import os
 import re
 import subprocess
-import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from dataclasses import dataclass
 
@@ -96,20 +96,6 @@ def run_git_diff() -> set[str]:
     return {line.strip().replace('\\', '/') for line in output.splitlines() if line.strip()}
 
 
-def parse_sections(file_path: Path) -> list[Section]:
-    parser = SectionsParser()
-    text = file_path.read_text(encoding="utf-8")
-    parser.feed(text)
-    results = []
-    for section in parser.sections:
-        title = section.title.strip()
-        subtitle = section.subtitle.strip()
-        href = section.href.strip()
-        if title and href:
-            results.append(Section(title=title, subtitle=subtitle, href=href))
-    return results
-
-
 def normalize_link(href: str) -> str:
     href = href.strip()
     if href.startswith("./"):
@@ -117,6 +103,18 @@ def normalize_link(href: str) -> str:
     if href.endswith(".html"):
         href = href[: -len(".html")]
     return href
+
+
+def parse_article_pubdate(subtitle: str) -> str | None:
+    if not subtitle.startswith("撰写于"):
+        return None
+    date_text = subtitle[len("撰写于"):].strip().rstrip("。")
+    match = re.search(r"(\d{4})年\s*(\d{1,2})月\s*(\d{1,2})日", date_text)
+    if not match:
+        return None
+    year, month, day = map(int, match.groups())
+    dt = datetime(year, month, day, tzinfo=timezone.utc)
+    return dt.strftime("%a, %d %b %Y %H:%M:%S GMT")
 
 
 def build_rss_items(home_sections: list[Section], article_sections: list[Section]) -> list[dict]:
@@ -140,45 +138,55 @@ def build_rss_items(home_sections: list[Section], article_sections: list[Section
         description = section.subtitle
         if description.startswith("撰写于"):
             description = f"本专栏{description}。"
-        items.append({
+        item = {
             "title": title,
             "link": link,
             "description": description,
             "guid": link,
-        })
+        }
+        pubdate = parse_article_pubdate(section.subtitle)
+        if pubdate:
+            item["pubDate"] = pubdate
+        items.append(item)
     return items
 
 
 def parse_existing_rss_items(rss_text: str) -> list[dict]:
     items = []
     pattern = re.compile(
-        r"<item>\s*<title>(.*?)</title>\s*<link>(.*?)</link>\s*<description>(.*?)</description>\s*<guid>(.*?)</guid>\s*</item>",
+        r"<item>\s*<title>(.*?)</title>\s*<link>(.*?)</link>\s*<description>(.*?)</description>\s*(?:<pubDate>(.*?)</pubDate>\s*)?<guid>(.*?)</guid>\s*</item>",
         re.DOTALL,
     )
     matches = pattern.findall(rss_text)
     if not matches:
         return []
-    for title, link, description, guid in matches[1:]:
-        items.append({
+    for title, link, description, pubdate, guid in matches[1:]:
+        item = {
             "title": title.strip(),
             "link": link.strip(),
             "description": description.strip(),
             "guid": guid.strip(),
-        })
+        }
+        if pubdate:
+            item["pubDate"] = pubdate.strip()
+        items.append(item)
     return items
 
 
 def format_rss_items(items: list[dict]) -> str:
     formatted = []
     for item in items:
-        formatted.append(
-            "    <item>\n"
-            f"      <title>{item['title']}</title>\n"
-            f"      <link>{item['link']}</link>\n"
-            f"      <description>{item['description']}</description>\n"
-            f"      <guid>{item['guid']}</guid>\n"
-            "    </item>"
-        )
+        lines = [
+            "    <item>",
+            f"      <title>{item['title']}</title>",
+            f"      <link>{item['link']}</link>",
+            f"      <description>{item['description']}</description>",
+        ]
+        if item.get("pubDate"):
+            lines.append(f"      <pubDate>{item['pubDate']}</pubDate>")
+        lines.append(f"      <guid>{item['guid']}</guid>")
+        lines.append("    </item>")
+        formatted.append("\n".join(lines))
     return "\n\n".join(formatted)
 
 
