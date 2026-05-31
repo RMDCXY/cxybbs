@@ -8,6 +8,7 @@ from dataclasses import dataclass
 
 ROOT_FILES = {"index.html", "articles/index.html"}
 RSS_PATH = Path("rss.xml")
+BASE_URL = "https://cxybbs.top"
 
 @dataclass
 class Section:
@@ -96,13 +97,27 @@ def run_git_diff() -> set[str]:
     return {line.strip().replace('\\', '/') for line in output.splitlines() if line.strip()}
 
 
+def is_force_update() -> bool:
+    if os.environ.get("FORCE_RSS_UPDATE", "false").lower() == "true":
+        return True
+    if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch":
+        return True
+    return False
+
+
 def normalize_link(href: str) -> str:
     href = href.strip()
+    if href.startswith("http://") or href.startswith("https://"):
+        return href
     if href.startswith("./"):
         href = href[2:]
     if href.endswith(".html"):
         href = href[: -len(".html")]
-    return href
+    if href.startswith("/"):
+        return f"{BASE_URL}{href}"
+    if href.startswith("#"):
+        return f"{BASE_URL}/{href}"
+    return f"{BASE_URL}/{href}"
 
 
 def parse_article_pubdate(subtitle: str) -> str | None:
@@ -213,13 +228,20 @@ def update_rss_file(home_sections: list[Section], article_sections: list[Section
 
 
 def main() -> int:
-    changed_files = run_git_diff()
-    relevant = ROOT_FILES.intersection(changed_files)
-    if not relevant:
-        print("No changes in index.html or articles/index.html. Skipping RSS update.")
-        return 0
-
     home_sections = parse_sections(Path("index.html"))
+    article_sections = parse_sections(Path("articles/index.html"))
+    if is_force_update():
+        print("Force update enabled. Regenerating RSS regardless of file diff.")
+    else:
+        changed_files = run_git_diff()
+        relevant = ROOT_FILES.intersection(changed_files)
+        if not relevant:
+            print("No changes in index.html or articles/index.html. Skipping RSS update.")
+            return 0
+
+    if not home_sections and not article_sections:
+        print("No sections found in HTML files. Skipping RSS update.")
+        return 0
     article_sections = parse_sections(Path("articles/index.html"))
     if not home_sections and not article_sections:
         print("No sections found in HTML files. Skipping RSS update.")

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - '**'
+  workflow_dispatch:
 
 jobs:
   update-rss:
@@ -22,7 +23,7 @@ jobs:
           python-version: '3.x'
 
       - name: Run RSS update
-        run: python scripts/update_rss.py
+        run: python .github/scripts/update_rss.py
 
       - name: Commit and push RSS
         run: |
