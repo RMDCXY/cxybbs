@@ -6,6 +6,9 @@ on:
       - '**'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   update-rss:
     runs-on: ubuntu-latest
@@ -14,6 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
           persist-credentials: true
 

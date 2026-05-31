@@ -5,10 +5,12 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from dataclasses import dataclass
+from typing import List, Set, Dict, Any
 
 ROOT_FILES = {"index.html", "articles/index.html"}
 RSS_PATH = Path("rss.xml")
 BASE_URL = "https://cxybbs.top"
+
 
 @dataclass
 class Section:
@@ -17,7 +19,8 @@ class Section:
     href: str = ""
 
 
-def extract_div_block(text: str, start: int) -> tuple[str, int] | tuple[None, int]:
+def extract_div_block(text: str, start: int):
+    """提取从 start 开始的 <div> 块，返回 (block_text, next_pos)"""
     end_tag = "</div>"
     start_tag = "<div"
     open_pos = text.find('>', start)
@@ -41,7 +44,10 @@ def extract_div_block(text: str, start: int) -> tuple[str, int] | tuple[None, in
     return text[start:pos], pos
 
 
-def parse_sections(file_path: Path) -> list[Section]:
+def parse_sections(file_path: Path) -> List[Section]:
+    """从 index.html 或 articles/index.html 中提取所有 section-card 信息"""
+    if not file_path.exists():
+        return []
     html = file_path.read_text(encoding="utf-8")
     sections_start = html.find('<div class="sections"')
     if sections_start == -1:
@@ -68,9 +74,15 @@ def parse_sections(file_path: Path) -> list[Section]:
             if not block:
                 idx = line_end + 1
                 continue
-            title_match = re.search(r'<div[^>]*class=["\"][^"\"]*section-title[^"\"]*["\"][^>]*>(.*?)</div>', block, re.S)
-            subtitle_match = re.search(r'<div[^>]*class=["\"][^"\"]*section-subtitle[^"\"]*["\"][^>]*>(.*?)</div>', block, re.S)
-            href_match = re.search(r'<a[^>]*href=["\"]([^"\"]+)["\"]', block)
+            title_match = re.search(
+                r'<div[^>]*class=["\'][^"\']*section-title[^"\']*["\'][^>]*>(.*?)</div>',
+                block, re.S
+            )
+            subtitle_match = re.search(
+                r'<div[^>]*class=["\'][^"\']*section-subtitle[^"\']*["\'][^>]*>(.*?)</div>',
+                block, re.S
+            )
+            href_match = re.search(r'<a[^>]*href=["\']([^"\']+)["\']', block)
             if title_match and href_match:
                 title = title_match.group(1).strip()
                 subtitle = subtitle_match.group(1).strip() if subtitle_match else ""
@@ -82,7 +94,8 @@ def parse_sections(file_path: Path) -> list[Section]:
     return results
 
 
-def run_git_diff() -> set[str]:
+def run_git_diff() -> Set[str]:
+    """获取本次 push 或 workflow_dispatch 中变更的文件列表"""
     before = os.environ.get("GITHUB_EVENT_BEFORE")
     sha = os.environ.get("GITHUB_SHA")
     args = ["git", "diff", "--name-only"]
@@ -98,6 +111,7 @@ def run_git_diff() -> set[str]:
 
 
 def is_force_update() -> bool:
+    """强制更新条件：手动触发或环境变量 FORCE_RSS_UPDATE=true"""
     if os.environ.get("FORCE_RSS_UPDATE", "false").lower() == "true":
         return True
     if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch":
@@ -106,13 +120,14 @@ def is_force_update() -> bool:
 
 
 def normalize_link(href: str) -> str:
+    """将相对路径转换为绝对 URL"""
     href = href.strip()
-    if href.startswith("http://") or href.startswith("https://"):
+    if href.startswith(("http://", "https://")):
         return href
     if href.startswith("./"):
         href = href[2:]
     if href.endswith(".html"):
-        href = href[: -len(".html")]
+        href = href[:-5]
     if href.startswith("/"):
         return f"{BASE_URL}{href}"
     if href.startswith("#"):
@@ -121,6 +136,7 @@ def normalize_link(href: str) -> str:
 
 
 def parse_article_pubdate(subtitle: str) -> str | None:
+    """从副标题中提取日期，并转换为 RFC 822 格式"""
     if not subtitle.startswith("撰写于"):
         return None
     date_text = subtitle[len("撰写于"):].strip().rstrip("。")
@@ -132,8 +148,10 @@ def parse_article_pubdate(subtitle: str) -> str | None:
     return dt.strftime("%a, %d %b %Y %H:%M:%S GMT")
 
 
-def build_rss_items(home_sections: list[Section], article_sections: list[Section]) -> list[dict]:
+def build_rss_items(home_sections: List[Section], article_sections: List[Section]) -> List[Dict[str, str]]:
+    """构建期望的 RSS items 列表"""
     items = []
+    # 首页的 sections（外部链接或项目）
     for section in home_sections:
         link = normalize_link(section.href)
         items.append({
@@ -142,8 +160,10 @@ def build_rss_items(home_sections: list[Section], article_sections: list[Section
             "description": section.subtitle,
             "guid": link,
         })
+    # 专栏文章 sections
     for section in article_sections:
         link = normalize_link(section.href)
+        # 从链接中提取文章 ID（例如 /articles/01）
         match = re.search(r"/articles/([0-9A-Za-z_-]+)$", link)
         if match:
             article_id = match.group(1)
@@ -166,29 +186,42 @@ def build_rss_items(home_sections: list[Section], article_sections: list[Section
     return items
 
 
-def parse_existing_rss_items(rss_text: str) -> list[dict]:
+def parse_existing_rss_items(rss_text: str) -> List[Dict[str, str]]:
+    """从现有 rss.xml 中提取 items（忽略模板示例）"""
     items = []
-    pattern = re.compile(
-        r"<item>\s*<title>(.*?)</title>\s*<link>(.*?)</link>\s*<description>(.*?)</description>\s*(?:<pubDate>(.*?)</pubDate>\s*)?<guid>(.*?)</guid>\s*</item>",
-        re.DOTALL,
-    )
-    matches = pattern.findall(rss_text)
-    if not matches:
-        return []
-    for title, link, description, pubdate, guid in matches[1:]:
-        item = {
-            "title": title.strip(),
-            "link": link.strip(),
-            "description": description.strip(),
-            "guid": guid.strip(),
-        }
-        if pubdate:
-            item["pubDate"] = pubdate.strip()
-        items.append(item)
+    # 匹配完整的 <item>...</item> 块
+    item_pattern = re.compile(r"<item>(.*?)</item>", re.DOTALL)
+    for item_xml in item_pattern.findall(rss_text):
+        title_match = re.search(r"<title>(.*?)</title>", item_xml, re.DOTALL)
+        link_match = re.search(r"<link>(.*?)</link>", item_xml, re.DOTALL)
+        desc_match = re.search(r"<description>(.*?)</description>", item_xml, re.DOTALL)
+        guid_match = re.search(r"<guid>(.*?)</guid>", item_xml, re.DOTALL)
+        pub_match = re.search(r"<pubDate>(.*?)</pubDate>", item_xml, re.DOTALL)
+
+        if title_match and link_match and desc_match and guid_match:
+            item = {
+                "title": title_match.group(1).strip(),
+                "link": link_match.group(1).strip(),
+                "description": desc_match.group(1).strip(),
+                "guid": guid_match.group(1).strip(),
+            }
+            if pub_match:
+                item["pubDate"] = pub_match.group(1).strip()
+            items.append(item)
     return items
 
 
-def format_rss_items(items: list[dict]) -> str:
+def items_equal(a: List[Dict], b: List[Dict]) -> bool:
+    """比较两个 item 列表是否内容相同（忽略顺序）"""
+    if len(a) != len(b):
+        return False
+    # 按 guid 排序后比较
+    key = lambda x: x.get("guid", "")
+    return sorted(a, key=key) == sorted(b, key=key)
+
+
+def format_rss_items(items: List[Dict[str, str]]) -> str:
+    """将 items 列表格式化为 RSS XML 字符串"""
     formatted = []
     for item in items:
         lines = [
@@ -205,31 +238,40 @@ def format_rss_items(items: list[dict]) -> str:
     return "\n\n".join(formatted)
 
 
-def update_rss_file(home_sections: list[Section], article_sections: list[Section]) -> bool:
+def update_rss_file(home_sections: List[Section], article_sections: List[Section]) -> bool:
+    """更新 rss.xml 文件，如果内容无变化则返回 False"""
     content = RSS_PATH.read_text(encoding="utf-8")
     existing_items = parse_existing_rss_items(content)
     desired_items = build_rss_items(home_sections, article_sections)
 
-    if existing_items == desired_items:
+    if items_equal(existing_items, desired_items):
         print("RSS content already matches section content. No update needed.")
         return False
 
-    match = re.search(r"^(.*?</item>)(.*?)(</channel>.*)$", content, re.DOTALL)
+    # 定位 <item> 列表的起始和结束位置，替换中间的 items
+    match = re.search(r"(.*?<item>.*?</item>.*?)(</channel>.*)$", content, re.DOTALL)
     if not match:
-        raise SystemExit("Unable to locate RSS item section in rss.xml")
+        # 兼容可能没有预先存在的 item 的情况
+        match = re.search(r"(.*?)(</channel>.*)$", content, re.DOTALL)
+        if not match:
+            raise SystemExit("Unable to locate channel section in rss.xml")
+        prefix = match.group(1).rstrip()
+        suffix = match.group(2)
+        new_items = format_rss_items(desired_items)
+        updated = f"{prefix}\n\n{new_items}\n{suffix}"
+    else:
+        prefix = match.group(1).rstrip()
+        suffix = match.group(2)
+        new_items = format_rss_items(desired_items)
+        updated = f"{prefix}\n\n{new_items}\n{suffix}"
 
-    prefix = match.group(1).rstrip()
-    suffix = match.group(3)
-    new_items = format_rss_items(desired_items)
-    updated = f"{prefix}\n\n{new_items}\n{suffix}"
     RSS_PATH.write_text(updated, encoding="utf-8")
     print("rss.xml updated")
     return True
 
 
 def main() -> int:
-    home_sections = parse_sections(Path("index.html"))
-    article_sections = parse_sections(Path("articles/index.html"))
+    # 判断是否强制更新
     if is_force_update():
         print("Force update enabled. Regenerating RSS regardless of file diff.")
     else:
@@ -239,16 +281,16 @@ def main() -> int:
             print("No changes in index.html or articles/index.html. Skipping RSS update.")
             return 0
 
-    if not home_sections and not article_sections:
-        print("No sections found in HTML files. Skipping RSS update.")
-        return 0
+    # 解析两个 HTML 文件
+    home_sections = parse_sections(Path("index.html"))
     article_sections = parse_sections(Path("articles/index.html"))
+
     if not home_sections and not article_sections:
         print("No sections found in HTML files. Skipping RSS update.")
         return 0
 
     updated = update_rss_file(home_sections, article_sections)
-    return 0 if updated or True else 0
+    return 0
 
 
 if __name__ == "__main__":
