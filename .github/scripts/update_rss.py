@@ -189,7 +189,6 @@ def build_rss_items(home_sections: List[Section], article_sections: List[Section
 def parse_existing_rss_items(rss_text: str) -> List[Dict[str, str]]:
     """从现有 rss.xml 中提取 items（忽略模板示例）"""
     items = []
-    # 匹配完整的 <item>...</item> 块
     item_pattern = re.compile(r"<item>(.*?)</item>", re.DOTALL)
     for item_xml in item_pattern.findall(rss_text):
         title_match = re.search(r"<title>(.*?)</title>", item_xml, re.DOTALL)
@@ -215,7 +214,6 @@ def items_equal(a: List[Dict], b: List[Dict]) -> bool:
     """比较两个 item 列表是否内容相同（忽略顺序）"""
     if len(a) != len(b):
         return False
-    # 按 guid 排序后比较
     key = lambda x: x.get("guid", "")
     return sorted(a, key=key) == sorted(b, key=key)
 
@@ -238,15 +236,20 @@ def format_rss_items(items: List[Dict[str, str]]) -> str:
     return "\n\n".join(formatted)
 
 
-def update_rss_file(home_sections: List[Section], article_sections: List[Section]) -> bool:
-    """更新 rss.xml 文件，如果内容无变化则返回 False"""
+def update_rss_file(home_sections: List[Section], article_sections: List[Section], force: bool = False) -> bool:
+    """
+    更新 rss.xml 文件。
+    如果 force=False 且内容无变化，则返回 False 不写入。
+    如果 force=True，则无论内容是否相同都强制写入并返回 True。
+    """
     content = RSS_PATH.read_text(encoding="utf-8")
-    existing_items = parse_existing_rss_items(content)
     desired_items = build_rss_items(home_sections, article_sections)
 
-    if items_equal(existing_items, desired_items):
-        print("RSS content already matches section content. No update needed.")
-        return False
+    if not force:
+        existing_items = parse_existing_rss_items(content)
+        if items_equal(existing_items, desired_items):
+            print("RSS content already matches section content. No update needed.")
+            return False
 
     # 定位 <item> 列表的起始和结束位置，替换中间的 items
     match = re.search(r"(.*?<item>.*?</item>.*?)(</channel>.*)$", content, re.DOTALL)
@@ -266,14 +269,15 @@ def update_rss_file(home_sections: List[Section], article_sections: List[Section
         updated = f"{prefix}\n\n{new_items}\n{suffix}"
 
     RSS_PATH.write_text(updated, encoding="utf-8")
-    print("rss.xml updated")
+    print("rss.xml updated" + (" (forced)" if force else ""))
     return True
 
 
 def main() -> int:
-    # 判断是否强制更新
-    if is_force_update():
-        print("Force update enabled. Regenerating RSS regardless of file diff.")
+    force = is_force_update()
+
+    if force:
+        print("Force update enabled (manual trigger). Will regenerate RSS even if content unchanged.")
     else:
         changed_files = run_git_diff()
         relevant = ROOT_FILES.intersection(changed_files)
@@ -289,7 +293,7 @@ def main() -> int:
         print("No sections found in HTML files. Skipping RSS update.")
         return 0
 
-    updated = update_rss_file(home_sections, article_sections)
+    updated = update_rss_file(home_sections, article_sections, force=force)
     return 0
 
 
