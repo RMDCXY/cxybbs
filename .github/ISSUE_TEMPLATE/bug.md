@@ -1,5 +1,6 @@
 ---
 name: BUG反馈
+about: 反馈网站出现的一些BUG
 labels: BUG
 title: '[BUG] '
 ---
