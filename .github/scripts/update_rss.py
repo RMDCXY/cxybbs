@@ -11,6 +11,14 @@ ROOT_FILES = {"index.html", "articles/index.html"}
 RSS_PATH = Path("rss.xml")
 BASE_URL = "https://cxybbs.top"
 
+# 固定的欢迎条目（手动修正 RSS 中包含的）
+WELCOME_ITEM = {
+    "title": "欢迎订阅CXYBBS~",
+    "link": "https://cxybbs.top",
+    "description": "建议开启RSS阅读器的“嵌入网页”“iframe”等选项，否则可能无法正常阅读专栏~",
+    "guid": "https://cxybbs.top",
+}
+
 
 @dataclass
 class Section:
@@ -82,6 +90,7 @@ def parse_sections(file_path: Path) -> List[Section]:
                 r'<div[^>]*class=["\'][^"\']*section-subtitle[^"\']*["\'][^>]*>(.*?)</div>',
                 block, re.S
             )
+            # 只取第一个 <a> 标签的 href（即最重要的链接）
             href_match = re.search(r'<a[^>]*href=["\']([^"\']+)["\']', block)
             if title_match and href_match:
                 title = title_match.group(1).strip()
@@ -127,7 +136,7 @@ def normalize_link(href: str) -> str:
     if href.startswith("./"):
         href = href[2:]
     if href.endswith(".html"):
-        href = href[:-5]
+        href = href[:-5]  # 移除 .html
     if href.startswith("/"):
         return f"{BASE_URL}{href}"
     if href.startswith("#"):
@@ -149,18 +158,32 @@ def parse_article_pubdate(subtitle: str) -> str | None:
 
 
 def build_rss_items(home_sections: List[Section], article_sections: List[Section]) -> List[Dict[str, str]]:
-    """构建期望的 RSS items 列表"""
+    """构建期望的 RSS items 列表（包含固定的欢迎条目）"""
     items = []
-    # 首页的 sections（外部链接或项目）
+    seen_guids: Set[str] = set()
+
+    # 1. 固定欢迎条目
+    if WELCOME_ITEM["guid"] not in seen_guids:
+        seen_guids.add(WELCOME_ITEM["guid"])
+        items.append(WELCOME_ITEM.copy())
+
+    # 2. 首页 sections（外部链接或项目）
     for section in home_sections:
         link = normalize_link(section.href)
-        items.append({
+        # 跳过明显的锚点链接（以 /# 开头）—— 实际上现在只取第一个a，不会出现锚点，但保留安全检查
+        if link.startswith(f"{BASE_URL}/#"):
+            continue
+        item = {
             "title": section.title,
             "link": link,
             "description": section.subtitle,
             "guid": link,
-        })
-    # 专栏文章 sections
+        }
+        if item["guid"] not in seen_guids:
+            seen_guids.add(item["guid"])
+            items.append(item)
+
+    # 3. 专栏文章 sections
     for section in article_sections:
         link = normalize_link(section.href)
         # 从链接中提取文章 ID（例如 /articles/01）
@@ -182,7 +205,10 @@ def build_rss_items(home_sections: List[Section], article_sections: List[Section
         pubdate = parse_article_pubdate(section.subtitle)
         if pubdate:
             item["pubDate"] = pubdate
-        items.append(item)
+        if item["guid"] not in seen_guids:
+            seen_guids.add(item["guid"])
+            items.append(item)
+
     return items
 
 
@@ -211,7 +237,7 @@ def parse_existing_rss_items(rss_text: str) -> List[Dict[str, str]]:
 
 
 def items_equal(a: List[Dict], b: List[Dict]) -> bool:
-    """比较两个 item 列表是否内容相同（忽略顺序）"""
+    """比较两个 item 列表是否内容相同（忽略顺序，按 guid 排序）"""
     if len(a) != len(b):
         return False
     key = lambda x: x.get("guid", "")
