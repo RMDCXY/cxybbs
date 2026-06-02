@@ -5,7 +5,7 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from dataclasses import dataclass
-from typing import List, Set, Dict, Any, Optional
+from typing import List, Set, Dict, Optional
 
 ROOT_FILES = {"index.html", "articles/index.html"}
 RSS_PATH = Path("rss.xml")
@@ -143,8 +143,6 @@ def normalize_link(href: str) -> str:
         href = href[:-5]
     if href.startswith("/"):
         return f"{BASE_URL}{href}"
-    if href.startswith("#"):
-        return f"{BASE_URL}/{href}"
     return f"{BASE_URL}/{href}"
 
 
@@ -164,12 +162,12 @@ def build_rss_items(home_sections: List[Section], article_sections: List[Section
     items = []
     seen_guids: Set[str] = set()
 
-    # 欢迎条目
+    # 1. 固定欢迎条目
     if WELCOME_ITEM["guid"] not in seen_guids:
         seen_guids.add(WELCOME_ITEM["guid"])
         items.append(WELCOME_ITEM.copy())
 
-    # 首页卡片（锚点链接，排除 id="articles"）
+    # 2. 首页卡片（仅锚点链接，排除专栏入口 id="articles"）
     for sec in home_sections:
         if sec.element_id == "articles" or not sec.element_id:
             continue
@@ -184,12 +182,11 @@ def build_rss_items(home_sections: List[Section], article_sections: List[Section
             seen_guids.add(item["guid"])
             items.append(item)
 
-    # 专栏文章卡片（使用 href 生成完整链接）
+    # 3. 专栏文章（完整链接 + pubDate）
     for sec in article_sections:
         if not sec.href:
             continue
         link = normalize_link(sec.href)
-        # 提取文章 ID
         match = re.search(r"/articles/([0-9A-Za-z_-]+)$", link)
         if match:
             article_id = match.group(1)
@@ -272,20 +269,23 @@ def update_rss_file(home_sections: List[Section], article_sections: List[Section
             print("RSS content already matches section content. No update needed.")
             return False
 
-    match = re.search(r"(.*?<item>.*?</item>.*?)(</channel>.*)$", content, re.DOTALL)
-    if not match:
-        match = re.search(r"(.*?)(</channel>.*)$", content, re.DOTALL)
-        if not match:
+    # 更可靠的替换方法：找到第一个 <item> 和最后一个 </item> 的位置，替换中间内容
+    first_item = content.find("<item>")
+    last_item = content.rfind("</item>")
+    if first_item == -1 or last_item == -1:
+        # 没有现有 item，尝试在 </channel> 前插入
+        channel_end = content.find("</channel>")
+        if channel_end == -1:
             raise SystemExit("Unable to locate channel section in rss.xml")
-        prefix = match.group(1).rstrip()
-        suffix = match.group(2)
-        new_items = format_rss_items(desired_items)
-        updated = f"{prefix}\n\n{new_items}\n{suffix}"
+        prefix = content[:channel_end].rstrip()
+        suffix = content[channel_end:]
+        new_items_block = format_rss_items(desired_items)
+        updated = f"{prefix}\n\n{new_items_block}\n{suffix}"
     else:
-        prefix = match.group(1).rstrip()
-        suffix = match.group(2)
-        new_items = format_rss_items(desired_items)
-        updated = f"{prefix}\n\n{new_items}\n{suffix}"
+        prefix = content[:first_item].rstrip()
+        suffix = content[last_item + len("</item>"):]
+        new_items_block = format_rss_items(desired_items)
+        updated = f"{prefix}\n\n{new_items_block}\n{suffix}"
 
     RSS_PATH.write_text(updated, encoding="utf-8")
     print("rss.xml updated" + (" (forced)" if force else ""))
