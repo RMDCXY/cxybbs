@@ -14,108 +14,6 @@
     </item>
 
     <item>
-      <title>📂CXYの专栏</title>
-      <link>https://cxybbs.top/articles</link>
-      <description>存放一些文章以及碎碎念</description>
-      <guid>https://cxybbs.top/articles</guid>
-    </item>
-
-    <item>
-      <title>[新]文件直链下载！永久有效！不限速！</title>
-      <link>https://www.bilibili.com/video/BV18W9fBJETq/</link>
-      <description>告别传统网盘烦恼，真直链！免费！永久有效</description>
-      <guid>https://www.bilibili.com/video/BV18W9fBJETq/</guid>
-    </item>
-
-    <item>
-      <title>用0.5b的模型AI编程</title>
-      <link>https://www.bilibili.com/video/BV1vtFKztEuW/</link>
-      <description>这是一期水视频，展示了使用低参数量的0.5b AI模型编写代码的效果。</description>
-      <guid>https://www.bilibili.com/video/BV1vtFKztEuW/</guid>
-    </item>
-
-    <item>
-      <title>将HTML打包成应用程序</title>
-      <link>https://www.bilibili.com/video/BV1T2gSzhEbF/</link>
-      <description>本期教程以最简单的方法将HTML打包为应用程序，小白看了也能学会。</description>
-      <guid>https://www.bilibili.com/video/BV1T2gSzhEbF/</guid>
-    </item>
-
-    <item>
-      <title>个人项目·24DotTool</title>
-      <link>https://cdnfiles.cxybbs.top/24DotTool_v14.24_setup.exe</link>
-      <description>24DotTool是一个计算24点数学游戏解法的工具，它基于暴力破解算法开发，所以可以快速破解出所有解法。点击“我要下载”可直接免费下载，历史版本提取码24dt。</description>
-      <guid>https://cdnfiles.cxybbs.top/24DotTool_v14.24_setup.exe</guid>
-    </item>
-
-    <item>
-      <title>告别网盘·伪直链</title>
-      <link>https://www.bilibili.com/video/BV1hTVJz4Ea9/</link>
-      <description>本期教程可以为您的文件创建一个伪直链，实现跳转链接直接下载，并且完全免费。</description>
-      <guid>https://www.bilibili.com/video/BV1hTVJz4Ea9/</guid>
-    </item>
-
-    <item>
-      <title>Scratch作品制作成网站</title>
-      <link>https://www.bilibili.com/video/BV1pWfDYiEge</link>
-      <description>本期教程可以将您的Scratch作品免费制作成一个网站，让更多人可以更快速、更方便地体验您的作品！</description>
-      <guid>https://www.bilibili.com/video/BV1pWfDYiEge</guid>
-    </item>
-
-    <item>
-      <title>Python打包成应用程序</title>
-      <link>https://www.bilibili.com/video/BV1UxmaYwE6D/</link>
-      <description>本期教程可以将您的Python项目打包成一个带安装程序的应用程序，让您的项目更好分享给别人体验！</description>
-      <guid>https://www.bilibili.com/video/BV1UxmaYwE6D/</guid>
-    </item>
-
-    <item>
-      <title>Scratch打包成应用程序</title>
-      <link>https://www.bilibili.com/video/BV1UxmaYwE6D/</link>
-      <description>本期教程可以将您的Scratch项目打包成一个带安装程序的应用程序，让您的项目显得更高级！</description>
-      <guid>https://www.bilibili.com/video/BV1UxmaYwE6D/</guid>
-    </item>
-
-    <item>
-      <title>专栏#01 - 一幅写真</title>
-      <link>https://cxybbs.top/articles/01</link>
-      <description>本专栏撰写于 2026年5月2日。</description>
-      <pubDate>Sat, 02 May 2026 00:00:00 GMT</pubDate>
-      <guid>https://cxybbs.top/articles/01</guid>
-    </item>
-
-    <item>
-      <title>专栏#02 - 大容量存储设备拉史说</title>
-      <link>https://cxybbs.top/articles/02</link>
-      <description>本专栏撰写于 2026年5月2日。</description>
-      <pubDate>Sat, 02 May 2026 00:00:00 GMT</pubDate>
-      <guid>https://cxybbs.top/articles/02</guid>
-    </item>
-
-    <item>
-      <title>专栏#03 - 将Python项目打包成带安装程序的软件？</title>
-      <link>https://cxybbs.top/articles/03</link>
-      <description>本专栏撰写于 2024年11月12日。</description>
-      <pubDate>Tue, 12 Nov 2024 00:00:00 GMT</pubDate>
-      <guid>https://cxybbs.top/articles/03</guid>
-    </item>
-
-    <item>
-      <title>专栏#04 - 如何0成本将你的Scratch项目制作成网站？</title>
-      <link>https://cxybbs.top/articles/04</link>
-      <description>本专栏撰写于 2025年1月27日。</description>
-      <pubDate>Mon, 27 Jan 2025 00:00:00 GMT</pubDate>
-      <guid>https://cxybbs.top/articles/04</guid>
-    </item>
-
-    <item>
-      <title>欢迎订阅CXYBBS~</title>
-      <link>https://cxybbs.top</link>
-      <description>建议开启RSS阅读器的“嵌入网页”“iframe”等选项，否则可能无法正常阅读专栏~</description>
-      <guid>https://cxybbs.top</guid>
-    </item>
-
-    <item>
       <title>更轻巧！将你的HTML网页打包为单一exe文件</title>
       <link>https://cxybbs.top/#html2exe</link>
       <description>本期视频利用neoEXE工具，将你的HTML网页打包为更轻巧的单一EXE文件！</description>
@@ -209,5 +107,6 @@
       <pubDate>Mon, 27 Jan 2025 00:00:00 GMT</pubDate>
       <guid>https://cxybbs.top/articles/04</guid>
     </item>
+
 </channel>
 </rss>
