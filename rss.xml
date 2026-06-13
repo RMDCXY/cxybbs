@@ -14,66 +14,66 @@
     </item>
 
     <item>
-      <title>📂CXYの专栏</title>
-      <link>https://cxybbs.top/articles</link>
-      <description>存放一些文章以及碎碎念</description>
-      <guid>https://cxybbs.top/articles</guid>
+      <title>更轻巧！将你的HTML网页打包为单一exe文件</title>
+      <link>https://cxybbs.top/#html2exe</link>
+      <description>本期视频利用neoEXE工具，将你的HTML网页打包为更轻巧的单一EXE文件！</description>
+      <guid>https://cxybbs.top/#html2exe</guid>
     </item>
 
     <item>
       <title>[新]文件直链下载！永久有效！不限速！</title>
-      <link>https://www.bilibili.com/video/BV18W9fBJETq/</link>
+      <link>https://cxybbs.top/#new_directlink</link>
       <description>告别传统网盘烦恼，真直链！免费！永久有效</description>
-      <guid>https://www.bilibili.com/video/BV18W9fBJETq/</guid>
+      <guid>https://cxybbs.top/#new_directlink</guid>
     </item>
 
     <item>
       <title>用0.5b的模型AI编程</title>
-      <link>https://www.bilibili.com/video/BV1vtFKztEuW/</link>
+      <link>https://cxybbs.top/#0.5b_aicoding</link>
       <description>这是一期水视频，展示了使用低参数量的0.5b AI模型编写代码的效果。</description>
-      <guid>https://www.bilibili.com/video/BV1vtFKztEuW/</guid>
+      <guid>https://cxybbs.top/#0.5b_aicoding</guid>
     </item>
 
     <item>
       <title>将HTML打包成应用程序</title>
-      <link>https://www.bilibili.com/video/BV1T2gSzhEbF/</link>
+      <link>https://cxybbs.top/#html2app</link>
       <description>本期教程以最简单的方法将HTML打包为应用程序，小白看了也能学会。</description>
-      <guid>https://www.bilibili.com/video/BV1T2gSzhEbF/</guid>
+      <guid>https://cxybbs.top/#html2app</guid>
     </item>
 
     <item>
       <title>个人项目·24DotTool</title>
-      <link>https://cdnfiles.cxybbs.top/24DotTool_v14.24_setup.exe</link>
+      <link>https://cxybbs.top/#24dt</link>
       <description>24DotTool是一个计算24点数学游戏解法的工具，它基于暴力破解算法开发，所以可以快速破解出所有解法。点击“我要下载”可直接免费下载，历史版本提取码24dt。</description>
-      <guid>https://cdnfiles.cxybbs.top/24DotTool_v14.24_setup.exe</guid>
+      <guid>https://cxybbs.top/#24dt</guid>
     </item>
 
     <item>
       <title>告别网盘·伪直链</title>
-      <link>https://www.bilibili.com/video/BV1hTVJz4Ea9/</link>
+      <link>https://cxybbs.top/#falsezl</link>
       <description>本期教程可以为您的文件创建一个伪直链，实现跳转链接直接下载，并且完全免费。</description>
-      <guid>https://www.bilibili.com/video/BV1hTVJz4Ea9/</guid>
+      <guid>https://cxybbs.top/#falsezl</guid>
     </item>
 
     <item>
       <title>Scratch作品制作成网站</title>
-      <link>https://www.bilibili.com/video/BV1pWfDYiEge</link>
+      <link>https://cxybbs.top/#scr2site</link>
       <description>本期教程可以将您的Scratch作品免费制作成一个网站，让更多人可以更快速、更方便地体验您的作品！</description>
-      <guid>https://www.bilibili.com/video/BV1pWfDYiEge</guid>
+      <guid>https://cxybbs.top/#scr2site</guid>
     </item>
 
     <item>
       <title>Python打包成应用程序</title>
-      <link>https://www.bilibili.com/video/BV1UxmaYwE6D/</link>
+      <link>https://cxybbs.top/#py2app</link>
       <description>本期教程可以将您的Python项目打包成一个带安装程序的应用程序，让您的项目更好分享给别人体验！</description>
-      <guid>https://www.bilibili.com/video/BV1UxmaYwE6D/</guid>
+      <guid>https://cxybbs.top/#py2app</guid>
     </item>
 
     <item>
       <title>Scratch打包成应用程序</title>
-      <link>https://www.bilibili.com/video/BV1UxmaYwE6D/</link>
+      <link>https://cxybbs.top/#scr2app</link>
       <description>本期教程可以将您的Scratch项目打包成一个带安装程序的应用程序，让您的项目显得更高级！</description>
-      <guid>https://www.bilibili.com/video/BV1UxmaYwE6D/</guid>
+      <guid>https://cxybbs.top/#scr2app</guid>
     </item>
 
     <item>
@@ -107,5 +107,6 @@
       <pubDate>Mon, 27 Jan 2025 00:00:00 GMT</pubDate>
       <guid>https://cxybbs.top/articles/04</guid>
     </item>
+
 </channel>
 </rss>
