@@ -14,6 +14,13 @@
     </item>
 
     <item>
+      <title>67加密器</title>
+      <link>https://cxybbs.top/#67encrypt</link>
+      <description>本工具通过二进制以及隐式零宽字符等方式，帮助您将任意字符串转换为67！</description>
+      <guid>https://cxybbs.top/#67encrypt</guid>
+    </item>
+
+    <item>
       <title>更轻巧！将你的HTML网页打包为单一exe文件</title>
       <link>https://cxybbs.top/#html2exe</link>
       <description>本期视频利用neoEXE工具，将你的HTML网页打包为更轻巧的单一EXE文件！</description>
@@ -107,6 +114,7 @@
       <pubDate>Mon, 27 Jan 2025 00:00:00 GMT</pubDate>
       <guid>https://cxybbs.top/articles/04</guid>
     </item>
+
 
 </channel>
 </rss>
