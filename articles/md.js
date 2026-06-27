@@ -149,4 +149,7 @@
     } else {
         render();
     }
+
+    window.fixMarkdownStyles = fixStyles;
+    window.addCodeCopyButtons = addCodeCopyButtons;
 })();

@@ -75,6 +75,38 @@ h4{
     outline: none;
     cursor: pointer;
 }
+
+.article-markdown blockquote p{
+    margin:2px 0;
+}
+
+.article-markdown blockquote {
+    position: relative;
+    display: block;
+    margin: 0.2em 0;
+    padding: 0.2em 0.8em 0.2em 0;
+    padding-left: 16px;
+    background: rgba(139, 148, 158, 0.08);
+    border: none;
+    border-radius: 0 4px 4px 0;
+    color: #d0d7de;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* 竖条伪元素 */
+.article-markdown blockquote::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    bottom: 2px;
+    width: 3px;
+    background: #8b949e;
+    border-radius: 2px;
+}
+
 .article-markdown a:hover {
     background: #0064e7;
     box-shadow: 0 1px 5px rgb(0,110,255,0.1);
@@ -83,6 +115,10 @@ h4{
 .article-markdown hr{
     opacity: 0.6;
     background: rgb(57, 57, 57) !important;
+}
+
+.article-markdown code{
+    background:rgba(24, 24, 24, 0.75) !important;
 }
 
 /* ===== Markdown custom styles end ===== */

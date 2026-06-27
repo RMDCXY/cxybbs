@@ -1,0 +1,4 @@
+/articles/        /articles/index.html  200
+/articles/index.html  /articles/index.html  200
+
+/articles/*       /articles/article.html  200
