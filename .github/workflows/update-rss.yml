@@ -5,9 +5,9 @@ on:
     branches:
       - '**'
     paths:
-      - 'index.html'                    # 首页卡片变化
-      - 'articles/index.html'           # 专栏列表变化
-      - 'articles/article-data.js'      # 文章数据变化
+      - 'index.html'
+      - 'articles/index.html'
+      - 'articles/article-data.js'
   workflow_dispatch:
 
 permissions:

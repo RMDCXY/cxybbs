@@ -28,7 +28,6 @@ class Section:
 
 
 def escape_xml(text: str) -> str:
-    """转义 XML 特殊字符"""
     if not text:
         return ""
     return (text
@@ -64,7 +63,6 @@ def extract_div_block(text: str, start: int):
 
 
 def parse_sections(file_path: Path) -> List[Section]:
-    """解析首页的 section 卡片"""
     if not file_path.exists():
         return []
     html = file_path.read_text(encoding="utf-8")
@@ -137,30 +135,36 @@ def parse_article_from_js(file_path: Path) -> List[Section]:
         return []
 
     results = []
-    # 匹配 "01": { ... } 中的内容
-    id_pattern = r'"(\d+)"\s*:\s*\{([\s\S]*?)\}(?=\s*,\s*"\d+"\s*:|\s*\})'
-
+    # 支持带引号和不带引号的属性名
+    id_pattern = r'["\']?(\d+)["\']?\s*:\s*\{([\s\S]*?)\}(?=\s*[,}]|$)'
+    
     for article_id, article_body in re.findall(id_pattern, match.group(1)):
-        title_match = re.search(r'"title"\s*:\s*"([^"]*)"', article_body)
-        date_match = re.search(r'"date"\s*:\s*"([^"]*)"', article_body)
+        title_match = re.search(r'["\']?title["\']?\s*:\s*"([^"]*)"', article_body)
+        date_match = re.search(r'["\']?date["\']?\s*:\s*"([^"]*)"', article_body)
 
         if title_match and date_match:
-            # ✅ 修复：直接使用 YYYY-MM-DD 格式
             results.append(Section(
                 title=title_match.group(1),
                 subtitle=f"撰写于 {date_match.group(1)}",
                 element_id="",
                 href=f"/articles/{article_id}"
             ))
+        else:
+            print(f"Warning: 文章 {article_id} 解析失败，缺少 title 或 date")
 
-    # 按日期降序排列（最新文章在前）
-    results.sort(
-        key=lambda x: datetime.strptime(
-            x.subtitle.replace("撰写于 ", ""),
-            "%Y-%m-%d"
-        ),
-        reverse=True
-    )
+    if results:
+        try:
+            results.sort(
+                key=lambda x: datetime.strptime(
+                    x.subtitle.replace("撰写于 ", ""),
+                    "%Y-%m-%d"
+                ),
+                reverse=True
+            )
+        except ValueError as e:
+            print(f"Warning: 日期解析失败: {e}")
+    
+    print(f"从 article-data.js 解析到 {len(results)} 篇文章")
     return results
 
 
@@ -180,19 +184,12 @@ def normalize_link(href: str) -> str:
 
 
 def parse_article_pubdate(subtitle: str) -> Optional[str]:
-    """
-    从 "撰写于 2026-05-02" 解析日期，返回 RFC 2822 格式
-    ✅ 修复：支持 YYYY-MM-DD 格式
-    """
     if not subtitle.startswith("撰写于"):
         return None
     date_text = subtitle[len("撰写于"):].strip().rstrip("。")
-    
-    # 匹配 YYYY-MM-DD 格式
     match = re.search(r"(\d{4})-(\d{1,2})-(\d{1,2})", date_text)
     if not match:
         return None
-    
     year, month, day = map(int, match.groups())
     dt = datetime(year, month, day, tzinfo=timezone.utc)
     return dt.strftime("%a, %d %b %Y %H:%M:%S GMT")
@@ -202,47 +199,27 @@ def build_rss_items(home_sections: List[Section], article_sections: List[Section
     items = []
     seen_guids: Set[str] = set()
 
-    # 1. 固定欢迎条目
     if WELCOME_ITEM["guid"] not in seen_guids:
         seen_guids.add(WELCOME_ITEM["guid"])
         items.append(WELCOME_ITEM.copy())
 
-    # 2. 首页卡片
     for sec in home_sections:
         if sec.element_id == "articles" or not sec.element_id:
             continue
         link = f"{BASE_URL}/#{sec.element_id}"
-        item = {
-            "title": sec.title,
-            "link": link,
-            "description": sec.subtitle,
-            "guid": link,
-        }
+        item = {"title": sec.title, "link": link, "description": sec.subtitle, "guid": link}
         if item["guid"] not in seen_guids:
             seen_guids.add(item["guid"])
             items.append(item)
 
-    # 3. 专栏文章
     for sec in article_sections:
         if not sec.href:
             continue
         link = normalize_link(sec.href)
         match = re.search(r"/articles/([0-9A-Za-z_-]+)$", link)
-        if match:
-            article_id = match.group(1)
-            title = f"专栏#{article_id} - {sec.title}"
-        else:
-            title = sec.title
-        description = sec.subtitle
-        if description.startswith("撰写于"):
-            description = f"本专栏{description}。"
-        
-        item = {
-            "title": title,
-            "link": link,
-            "description": description,
-            "guid": link,
-        }
+        title = f"专栏#{match.group(1)} - {sec.title}" if match else sec.title
+        description = f"本专栏{sec.subtitle}。" if sec.subtitle.startswith("撰写于") else sec.subtitle
+        item = {"title": title, "link": link, "description": description, "guid": link}
         pubdate = parse_article_pubdate(sec.subtitle)
         if pubdate:
             item["pubDate"] = pubdate
@@ -262,7 +239,6 @@ def parse_existing_rss_items(rss_text: str) -> List[Dict[str, str]]:
         desc_match = re.search(r"<description>(.*?)</description>", item_xml, re.DOTALL)
         guid_match = re.search(r"<guid>(.*?)</guid>", item_xml, re.DOTALL)
         pub_match = re.search(r"<pubDate>(.*?)</pubDate>", item_xml, re.DOTALL)
-
         if title_match and link_match and desc_match and guid_match:
             item = {
                 "title": title_match.group(1).strip(),
@@ -277,9 +253,6 @@ def parse_existing_rss_items(rss_text: str) -> List[Dict[str, str]]:
 
 
 def items_equal(a: List[Dict], b: List[Dict]) -> bool:
-    """
-    ✅ 修复：同时比较 guid 和 title，确保内容变化时触发更新
-    """
     if len(a) != len(b):
         return False
     key = lambda x: (x.get("guid", ""), x.get("title", ""))
@@ -287,7 +260,6 @@ def items_equal(a: List[Dict], b: List[Dict]) -> bool:
 
 
 def format_rss_items(items: List[Dict[str, str]]) -> str:
-    """✅ 修复：转义 XML 特殊字符"""
     formatted = []
     for item in items:
         lines = [
@@ -336,12 +308,11 @@ def update_rss_file(home_sections: List[Section], article_sections: List[Section
         updated = f"{prefix}\n\n{new_items_block}\n{suffix}"
 
     RSS_PATH.write_text(updated, encoding="utf-8")
-    print("rss.xml updated" + (" (forced)" if force else ""))
+    print(f"rss.xml updated ({len(desired_items)} items)" + (" (forced)" if force else ""))
     return True
 
 
 def main() -> int:
-    # workflow_dispatch 时强制更新
     force = os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
     if force:
