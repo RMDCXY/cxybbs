@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - '**'
+    paths:
+      - 'index.html'                    # 首页卡片变化
+      - 'articles/index.html'           # 专栏列表变化
+      - 'articles/article-data.js'      # 文章数据变化
   workflow_dispatch:
 
 permissions:

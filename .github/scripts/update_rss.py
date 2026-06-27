@@ -4,12 +4,12 @@ import re
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
-from dataclasses import dataclass
 from typing import List, Set, Dict, Optional
+from dataclasses import dataclass
 
-ROOT_FILES = {"index.html", "articles/index.html"}
 RSS_PATH = Path("rss.xml")
 BASE_URL = "https://cxybbs.top"
+ARTICLE_DATA_PATH = Path("articles/article-data.js")
 
 WELCOME_ITEM = {
     "title": "欢迎订阅CXYBBS~",
@@ -25,6 +25,18 @@ class Section:
     subtitle: str = ""
     element_id: str = ""
     href: str = ""
+
+
+def escape_xml(text: str) -> str:
+    """转义 XML 特殊字符"""
+    if not text:
+        return ""
+    return (text
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&apos;"))
 
 
 def extract_div_block(text: str, start: int):
@@ -52,6 +64,7 @@ def extract_div_block(text: str, start: int):
 
 
 def parse_sections(file_path: Path) -> List[Section]:
+    """解析首页的 section 卡片"""
     if not file_path.exists():
         return []
     html = file_path.read_text(encoding="utf-8")
@@ -110,31 +123,51 @@ def parse_sections(file_path: Path) -> List[Section]:
     return results
 
 
-def run_git_diff() -> Set[str]:
-    before = os.environ.get("GITHUB_EVENT_BEFORE")
-    sha = os.environ.get("GITHUB_SHA")
-    args = ["git", "diff", "--name-only"]
-    if before and before != "0000000000000000000000000000000000000000" and sha:
-        args.extend([before, sha])
-    else:
-        args.extend(["HEAD~1", "HEAD"])
-    try:
-        output = subprocess.check_output(args, text=True, stderr=subprocess.DEVNULL)
-    except subprocess.CalledProcessError:
-        return set()
-    return {line.strip().replace('\\', '/') for line in output.splitlines() if line.strip()}
+def parse_article_from_js(file_path: Path) -> List[Section]:
+    """从 article-data.js 解析文章，转换为 Section 格式"""
+    if not file_path.exists():
+        print(f"Warning: {file_path} not found")
+        return []
 
+    content = file_path.read_text(encoding="utf-8")
+    pattern = r'const\s+ARTICLE_DB\s*=\s*({[\s\S]*?});\s*(?:\n|$)'
+    match = re.search(pattern, content)
+    if not match:
+        print("Warning: Could not find ARTICLE_DB in article-data.js")
+        return []
 
-def is_force_update() -> bool:
-    if os.environ.get("FORCE_RSS_UPDATE", "false").lower() == "true":
-        return True
-    if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch":
-        return True
-    return False
+    results = []
+    # 匹配 "01": { ... } 中的内容
+    id_pattern = r'"(\d+)"\s*:\s*\{([\s\S]*?)\}(?=\s*,\s*"\d+"\s*:|\s*\})'
+
+    for article_id, article_body in re.findall(id_pattern, match.group(1)):
+        title_match = re.search(r'"title"\s*:\s*"([^"]*)"', article_body)
+        date_match = re.search(r'"date"\s*:\s*"([^"]*)"', article_body)
+
+        if title_match and date_match:
+            # ✅ 修复：直接使用 YYYY-MM-DD 格式
+            results.append(Section(
+                title=title_match.group(1),
+                subtitle=f"撰写于 {date_match.group(1)}",
+                element_id="",
+                href=f"/articles/{article_id}"
+            ))
+
+    # 按日期降序排列（最新文章在前）
+    results.sort(
+        key=lambda x: datetime.strptime(
+            x.subtitle.replace("撰写于 ", ""),
+            "%Y-%m-%d"
+        ),
+        reverse=True
+    )
+    return results
 
 
 def normalize_link(href: str) -> str:
     href = href.strip()
+    if not href:
+        return ""
     if href.startswith(("http://", "https://")):
         return href
     if href.startswith("./"):
@@ -147,12 +180,19 @@ def normalize_link(href: str) -> str:
 
 
 def parse_article_pubdate(subtitle: str) -> Optional[str]:
+    """
+    从 "撰写于 2026-05-02" 解析日期，返回 RFC 2822 格式
+    ✅ 修复：支持 YYYY-MM-DD 格式
+    """
     if not subtitle.startswith("撰写于"):
         return None
     date_text = subtitle[len("撰写于"):].strip().rstrip("。")
-    match = re.search(r"(\d{4})年\s*(\d{1,2})月\s*(\d{1,2})日", date_text)
+    
+    # 匹配 YYYY-MM-DD 格式
+    match = re.search(r"(\d{4})-(\d{1,2})-(\d{1,2})", date_text)
     if not match:
         return None
+    
     year, month, day = map(int, match.groups())
     dt = datetime(year, month, day, tzinfo=timezone.utc)
     return dt.strftime("%a, %d %b %Y %H:%M:%S GMT")
@@ -167,7 +207,7 @@ def build_rss_items(home_sections: List[Section], article_sections: List[Section
         seen_guids.add(WELCOME_ITEM["guid"])
         items.append(WELCOME_ITEM.copy())
 
-    # 2. 首页卡片（仅锚点链接，排除专栏入口 id="articles"）
+    # 2. 首页卡片
     for sec in home_sections:
         if sec.element_id == "articles" or not sec.element_id:
             continue
@@ -182,7 +222,7 @@ def build_rss_items(home_sections: List[Section], article_sections: List[Section
             seen_guids.add(item["guid"])
             items.append(item)
 
-    # 3. 专栏文章（完整链接 + pubDate）
+    # 3. 专栏文章
     for sec in article_sections:
         if not sec.href:
             continue
@@ -196,6 +236,7 @@ def build_rss_items(home_sections: List[Section], article_sections: List[Section
         description = sec.subtitle
         if description.startswith("撰写于"):
             description = f"本专栏{description}。"
+        
         item = {
             "title": title,
             "link": link,
@@ -236,47 +277,54 @@ def parse_existing_rss_items(rss_text: str) -> List[Dict[str, str]]:
 
 
 def items_equal(a: List[Dict], b: List[Dict]) -> bool:
+    """
+    ✅ 修复：同时比较 guid 和 title，确保内容变化时触发更新
+    """
     if len(a) != len(b):
         return False
-    key = lambda x: x.get("guid", "")
+    key = lambda x: (x.get("guid", ""), x.get("title", ""))
     return sorted(a, key=key) == sorted(b, key=key)
 
 
 def format_rss_items(items: List[Dict[str, str]]) -> str:
+    """✅ 修复：转义 XML 特殊字符"""
     formatted = []
     for item in items:
         lines = [
             "    <item>",
-            f"      <title>{item['title']}</title>",
-            f"      <link>{item['link']}</link>",
-            f"      <description>{item['description']}</description>",
+            f"      <title>{escape_xml(item['title'])}</title>",
+            f"      <link>{escape_xml(item['link'])}</link>",
+            f"      <description>{escape_xml(item['description'])}</description>",
         ]
         if item.get("pubDate"):
-            lines.append(f"      <pubDate>{item['pubDate']}</pubDate>")
-        lines.append(f"      <guid>{item['guid']}</guid>")
+            lines.append(f"      <pubDate>{escape_xml(item['pubDate'])}</pubDate>")
+        lines.append(f"      <guid>{escape_xml(item['guid'])}</guid>")
         lines.append("    </item>")
         formatted.append("\n".join(lines))
     return "\n\n".join(formatted)
 
 
 def update_rss_file(home_sections: List[Section], article_sections: List[Section], force: bool = False) -> bool:
+    if not RSS_PATH.exists():
+        print(f"Error: {RSS_PATH} not found")
+        return False
+
     content = RSS_PATH.read_text(encoding="utf-8")
     desired_items = build_rss_items(home_sections, article_sections)
 
     if not force:
         existing_items = parse_existing_rss_items(content)
         if items_equal(existing_items, desired_items):
-            print("RSS content already matches section content. No update needed.")
+            print("RSS content already matches. No update needed.")
             return False
 
-    # 更可靠的替换方法：找到第一个 <item> 和最后一个 </item> 的位置，替换中间内容
     first_item = content.find("<item>")
     last_item = content.rfind("</item>")
     if first_item == -1 or last_item == -1:
-        # 没有现有 item，尝试在 </channel> 前插入
         channel_end = content.find("</channel>")
         if channel_end == -1:
-            raise SystemExit("Unable to locate channel section in rss.xml")
+            print("Error: Unable to locate channel section in rss.xml")
+            return False
         prefix = content[:channel_end].rstrip()
         suffix = content[channel_end:]
         new_items_block = format_rss_items(desired_items)
@@ -293,22 +341,17 @@ def update_rss_file(home_sections: List[Section], article_sections: List[Section
 
 
 def main() -> int:
-    force = is_force_update()
+    # workflow_dispatch 时强制更新
+    force = os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
     if force:
-        print("Force update enabled (manual trigger). Will regenerate RSS even if content unchanged.")
-    else:
-        changed_files = run_git_diff()
-        relevant = ROOT_FILES.intersection(changed_files)
-        if not relevant:
-            print("No changes in index.html or articles/index.html. Skipping RSS update.")
-            return 0
+        print("Force update enabled (manual trigger).")
 
     home_sections = parse_sections(Path("index.html"))
-    article_sections = parse_sections(Path("articles/index.html"))
+    article_sections = parse_article_from_js(Path("articles/article-data.js"))
 
     if not home_sections and not article_sections:
-        print("No sections found in HTML files. Skipping RSS update.")
+        print("No sections found. Skipping RSS update.")
         return 0
 
     update_rss_file(home_sections, article_sections, force=force)
