@@ -6,8 +6,7 @@ on:
       - '**'
     paths:
       - 'index.html'
-      - 'articles/index.html'
-      - 'articles/article-data.js'
+      - 'articles/**'
   workflow_dispatch:
 
 permissions:
