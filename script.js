@@ -63,7 +63,6 @@ const footerQuotes = [
     "你™劈我瓜是吧！",
     "不豪，bugjump发力了",
     "井inclade《iosteam》",
-    "嘎嘎↗滴辣↘虾↑～安↓迪↑～～～",
     "啊哈哈哈哈哈，鸡汤来咯",
     "阿米诺斯",
     "棍母",
@@ -81,6 +80,12 @@ const footerQuotes = [
     "admin@cxybbs_server:~$ sudo rm -rf /* --no-preserve-root",
     "萨日朗",
     "你知道吗，你正在看这行文字",
+    "遇oj不决先引头文件",
+    "遇oj不决先定义变量",
+    "Dream,还我十万美刀！",
+    "i no money i no money no kill me no kill me",
+    "您线蓝了",
+    "您线白了",
     "I FAQ!",
     "听君一席话，如听一席话",
     "吾去，汝不早曰",
@@ -183,7 +188,7 @@ const footerQuotes = [
 
     // 定义要排除渐变的字符列表（直接按字符列出，不使用正则）
     // 列表中的字符会被包裹为 .no-gradient，其他字符将正常使用渐变
-    const EXCLUDE_GRADIENT_CHARS = new Set(['🤚', '😭', '✋', '⚠', '☁','👍']);
+    const EXCLUDE_GRADIENT_CHARS = new Set(['🤚', '😭', '✋', '⚠', '☁', '👍']);
 
     function escapeHTML(s) {
         return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -303,25 +308,23 @@ async function copy(text) {
     }
 }
 
-function shouqi(){
-    const urls=['/policy',
-    		'/deal',
-    		'/about',
-    		'https://cdnfiles.cxybbs.top/newvideo2.mp4',
-    		'https://cdnfiles.cxybbs.top/newvideo.mp4',
-    		'about:blank',
-    		'/404',
-    		'/res/client.pdf',
-    		'https://cloudflare-cn.com',
-    		'https://github.com',
-    		'https://gitforwindows.org',
-	        'https://microsoft.com',
-	        'https://dash.cloudflare.com',
-	        'https://bilibili.com',
-	        'https://google.com',
-    		'https://git-scm.cn',
-    		'chrome://dino',
-    		'edge://surf',
-    		'https://guthib.com']
-    window.open(urls[Math.floor(Math.random()*urls.length)]);
+function shouqi() {
+    const urls = [
+        '/policy',
+        '/deal',
+        '/about',
+        'https://cxybbs.top/cdn/newvideo2.mp4',
+        'https://cxybbs.top/cdn/newvideo.mp4',
+        'about:blank',
+        '/404',
+        'https://cloudflare-cn.com',
+        'https://github.com',
+        'https://gitforwindows.org',
+        'https://microsoft.com',
+        'https://dash.cloudflare.com',
+        'https://bilibili.com',
+        'https://google.com',
+        'https://git-scm.cn',
+        'https://guthib.com']
+    window.open(urls[Math.floor(Math.random() * urls.length)]);
 }
