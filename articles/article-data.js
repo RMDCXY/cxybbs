@@ -4,9 +4,9 @@ const ARTICLE_DB = {
     title: "VendorCo牌存储器专营店广告",
     date: "2026-07-17",
     renderMarkdown: true,
-    markdown: `<img src="res/vendorco广告.png" alt="图片" width="75%">
+    markdown: `<img src="res/vendorco广告.png" alt="图片">
     <details><summary style="user-select:none;">或查看svg版本(可能显示异常)</summary>
-    <img src="res/vendorco广告.svg" alt="svg" width="75%">
+    <img src="res/vendorco广告.svg" alt="svg">
     </details>
     `
   },
