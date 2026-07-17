@@ -121,6 +121,16 @@ h4{
     background:rgba(24, 24, 24, 0.75) !important;
 }
 
+.article-markdown img{
+    width: 35%;
+}
+
+@media (max-width: 767px) {
+    .article-markdown img{
+        width: 75%;
+    }
+}
+
 /* ===== Markdown custom styles end ===== */
 
 .nolg{

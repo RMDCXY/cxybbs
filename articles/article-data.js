@@ -1,4 +1,16 @@
 const ARTICLE_DB = {
+  "06": {
+    id: "06",
+    title: "VendorCo牌存储器专营店广告",
+    date: "2026-07-17",
+    renderMarkdown: true,
+    markdown: `<img src="res/vendorco广告.png" alt="图片" width="75%">
+    <details><summary style="user-select:none;">或查看svg版本(可能显示异常)</summary>
+    <img src="res/vendorco广告.svg" alt="svg" width="75%">
+    </details>
+    `
+  },
+
   "05": {
     id: "05",
     title: "依旧写真",
@@ -51,7 +63,7 @@ Performance & Security by Cloudflare`
     renderMarkdown: true,
     markdown: `---
 
-<img src="/res/scrtosite.jpg" width="45%">
+<img src="/res/scrtosite.jpg">
 
 > 本期视频仅发布于哔哩哔哩，点击[此处](https://www.bilibili.com/video/BV1pWfDYiEge/)跳转视频。
 
@@ -83,7 +95,7 @@ Performance & Security by Cloudflare`
     renderMarkdown: true,
     markdown: `---
 
-<img src="/res/pytoapp.jpg" width="45%">
+<img src="/res/pytoapp.jpg">
 
 > 视频中提到的资源 网盘链接
 
