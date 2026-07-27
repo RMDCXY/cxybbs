@@ -77,51 +77,35 @@
         if (dateEl) dateEl.textContent = article.date;
 
         if (markdownEl) {
-            fetch(`${id}.md`).then(function(response) {
-                if (!response.ok) {
-                    throw new Error('Markdown file not found');
-                }
-                return response.text();
-            }).then(function(text) {
-                renderMarkdownText(text);
-            }).catch(function() {
-                markdownEl.textContent = '文章内容加载失败。';
-                markdownEl.style.whiteSpace = 'pre-wrap';
-                markdownEl.style.color = 'white';
-                markdownEl.style.padding = '15px';
-            });
-
-            function renderMarkdownText(text) {
-                const source = text || '';
-                if (article.renderMarkdown && window.marked && typeof window.marked.parse === 'function') {
-                    const result = window.marked.parse(source.trim());
-                    if (result && typeof result.then === 'function') {
-                        result.then(function(html) {
-                            markdownEl.innerHTML = html;
-                            markdownEl.classList.add('markdown-body');
-                            if (typeof window.addCodeCopyButtons === 'function') {
-                                window.addCodeCopyButtons(markdownEl);
-                            }
-                        });
-                    } else {
-                        markdownEl.innerHTML = result;
+            // 判断是否启用 Markdown 渲染
+            if (article.renderMarkdown && window.marked && typeof window.marked.parse === 'function') {
+                const result = window.marked.parse(article.markdown || '');
+                if (result && typeof result.then === 'function') {
+                    result.then(function(html) {
+                        markdownEl.innerHTML = html;
                         markdownEl.classList.add('markdown-body');
                         if (typeof window.addCodeCopyButtons === 'function') {
                             window.addCodeCopyButtons(markdownEl);
                         }
-                    }
+                    });
                 } else {
-                    markdownEl.textContent = source;
-                    markdownEl.classList.remove('markdown-body');
-                    markdownEl.style.whiteSpace = 'pre-wrap';
-                    markdownEl.style.backgroundColor = 'transparent';
-                    markdownEl.style.color = 'white';
-                    markdownEl.style.fontFamily = 'inherit';
-                    markdownEl.style.fontSize = 'inherit';
-                    markdownEl.style.lineHeight = '1.8';
-                    markdownEl.style.padding = '0';
-                    markdownEl.style.margin = '15px';
+                    markdownEl.innerHTML = result;
+                    markdownEl.classList.add('markdown-body');
+                    if (typeof window.addCodeCopyButtons === 'function') {
+                        window.addCodeCopyButtons(markdownEl);
+                    }
                 }
+            } else {
+                markdownEl.textContent = article.markdown || '';
+                markdownEl.classList.remove('markdown-body');
+                markdownEl.style.whiteSpace = 'pre-wrap';
+                markdownEl.style.backgroundColor = 'transparent';
+                markdownEl.style.color = 'white';
+                markdownEl.style.fontFamily = 'inherit';
+                markdownEl.style.fontSize = 'inherit';
+                markdownEl.style.lineHeight = '1.8';
+                markdownEl.style.padding = '0';
+                markdownEl.style.margin = '15px';
             }
         }
     })();

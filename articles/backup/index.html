@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CXYの专栏</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/articles.css">
+    <!--图标-->
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+</head>
+
+<body>
+    <div class="topbar">
+        <a href="/"><img src="/img/return.png" width="32"></a>
+        <img src="/img/logo.png" width="185" id="topbar-logo">
+        <div class="topbar-links">
+            <a id="mailbtn" target="_blank" style="margin: 0;"><img src="/img/mail.svg" width="40"></a>
+            <button onclick="qq()" style="padding: 0;"><img src="/img/qq.svg" width="40"></button>
+            <a href="https://space.bilibili.com/3493142110144946" target="_blank"><img src="/img/bili.svg" width="40"></a>
+        </div>
+    </div>
+
+    <h1><span class="nolg">📂</span>CXYの专栏</h1>
+    <h2>存放一些文章以及碎碎念</h2>
+
+    <div class="sections" id="article-list">
+        <p style="text-align:center;color:#999;">加载中...</p>
+    </div>
+
+    <footer class="footer">
+        <span style="color:#6f6f6f">Copyright (C) RMDCXY
+            <script type="text/javascript">document.write(new Date().getFullYear());</script>.All rights reserved.
+        </span>
+        <div>
+            <a href="/rss.xml" target="_blank">📡RSS</a>
+            <a href="https://github.com/RMDCXY/cxybbs" target="_blank">😺GH Repo</a>
+            <a href="/deal.html">用户协议</a>
+            <a href="/policy.html">隐私政策</a>
+            <a href="https://github.com/RMDCXY/cxybbs/issues" target="_blank">意见反馈</a>
+            <a href="/about.html">关于</a>
+        </div>
+    </footer>
+    <script src="/a.js"></script>
+    <script src="./article-data.js"></script>
+    <script>
+        (function() {
+        const container = document.getElementById('article-list');
+        const articles = window.ARTICLE_LIST || [];
+
+        if (articles.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;">暂无文章</p>';
+            return;
+        }
+
+        let html = '';
+        articles.forEach(function(article) {
+            // 统一使用参数形式，本地和线上都兼容
+            const link = `/articles/article.html?id=${article.id}`;
+            html += `
+                <div class="section-card no-img" id="${article.id}">
+                    <div class="section-info">
+                        <div class="section-title">${article.title}</div>
+                        <div class="section-subtitle">撰写于 ${article.date}</div>
+                        <a href="${link}" class="section-link">查看
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48"><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m19 12l12 12l-12 12"/></svg>
+                        </a>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    })();
+    </script>
+</body>
+
+</html>
