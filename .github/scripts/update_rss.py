@@ -121,8 +121,20 @@ def parse_sections(file_path: Path) -> List[Section]:
     return results
 
 
+def discover_article_ids(articles_dir: Path) -> List[str]:
+    if not articles_dir.exists():
+        return []
+    ids = []
+    for path in sorted(articles_dir.glob("*.md")):
+        if path.name.startswith("."):
+            continue
+        if re.fullmatch(r"\d+", path.stem):
+            ids.append(path.stem)
+    return ids
+
+
 def parse_article_from_js(file_path: Path) -> List[Section]:
-    """从 article-data.js 解析文章，转换为 Section 格式"""
+    """从 article-data.js 解析文章，转换为 Section 格式，并兼容 articles/*.md 的新结构"""
     if not file_path.exists():
         print(f"Warning: {file_path} not found")
         return []
@@ -135,22 +147,31 @@ def parse_article_from_js(file_path: Path) -> List[Section]:
         return []
 
     results = []
-    # 支持带引号和不带引号的属性名
+    metadata_by_id: Dict[str, Dict[str, str]] = {}
     id_pattern = r'["\']?(\d+)["\']?\s*:\s*\{([\s\S]*?)\}(?=\s*[,}]|$)'
-    
+
     for article_id, article_body in re.findall(id_pattern, match.group(1)):
         title_match = re.search(r'["\']?title["\']?\s*:\s*"([^"]*)"', article_body)
         date_match = re.search(r'["\']?date["\']?\s*:\s*"([^"]*)"', article_body)
 
         if title_match and date_match:
-            results.append(Section(
-                title=title_match.group(1),
-                subtitle=f"撰写于 {date_match.group(1)}",
-                element_id="",
-                href=f"/articles/{article_id}"
-            ))
+            metadata_by_id[article_id] = {
+                "title": title_match.group(1),
+                "date": date_match.group(1),
+            }
         else:
             print(f"Warning: 文章 {article_id} 解析失败，缺少 title 或 date")
+
+    article_ids = discover_article_ids(file_path.parent)
+    for article_id in sorted(set(metadata_by_id) | set(article_ids), key=lambda x: int(x) if x.isdigit() else x, reverse=True):
+        metadata = metadata_by_id.get(article_id)
+        if metadata:
+            results.append(Section(
+                title=metadata["title"],
+                subtitle=f"撰写于 {metadata['date']}",
+                element_id="",
+                href=f"/articles/article.html?id={article_id}"
+            ))
 
     if results:
         try:
@@ -163,8 +184,8 @@ def parse_article_from_js(file_path: Path) -> List[Section]:
             )
         except ValueError as e:
             print(f"Warning: 日期解析失败: {e}")
-    
-    print(f"从 article-data.js 解析到 {len(results)} 篇文章")
+
+    print(f"从 article-data.js 和 articles/*.md 解析到 {len(results)} 篇文章")
     return results
 
 
@@ -216,8 +237,13 @@ def build_rss_items(home_sections: List[Section], article_sections: List[Section
         if not sec.href:
             continue
         link = normalize_link(sec.href)
-        match = re.search(r"/articles/([0-9A-Za-z_-]+)$", link)
-        title = f"专栏#{match.group(1)} - {sec.title}" if match else sec.title
+        article_id = ""
+        id_match = re.search(r"(?:^|[?&])id=([0-9A-Za-z_-]+)", sec.href)
+        if id_match:
+            article_id = id_match.group(1)
+        elif re.search(r"/articles/([0-9A-Za-z_-]+)$", link):
+            article_id = re.search(r"/articles/([0-9A-Za-z_-]+)$", link).group(1)
+        title = f"专栏#{article_id} - {sec.title}" if article_id else sec.title
         description = f"本专栏{sec.subtitle}。" if sec.subtitle.startswith("撰写于") else sec.subtitle
         item = {"title": title, "link": link, "description": description, "guid": link}
         pubdate = parse_article_pubdate(sec.subtitle)
