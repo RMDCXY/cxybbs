@@ -368,7 +368,7 @@ a {
     justify-content: center;
     text-align: center;
     margin: 32px 0 16px 0;
-    gap: 8px;
+    gap: 2px;
 }
 
 .footer a {
@@ -376,8 +376,8 @@ a {
     color: #007cff;
     box-shadow: none;
     border-radius: 0;
-    padding: 0 8px;
-    margin: 0 2px;
+    padding:0 !important;
+    margin: 0 2px !important; 
     font-weight: bold;
     text-decoration: none;
     font-size: 15px;
