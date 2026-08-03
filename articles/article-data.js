@@ -1,4 +1,11 @@
 const ARTICLE_DB = {
+  "07": {
+    id: "07",
+    title: "高端设计 木及寒 速二令®电风扇",
+    date: "2026-08-03",
+    renderMarkdown: true
+  },
+
   "06": {
     id: "06",
     title: "VendorCo牌存储器专营店广告",
