@@ -6,9 +6,9 @@
   <h1>CXYBBS</h1>
 </div>
 
-> CXYBBS是RMDCXY的个人网站，这是CXYBBS的存储库，连接到Cloudflare Pages。
+> CXYBBS是RMDCXY的个人网站，这是CXYBBS的代码存储库，连接到Cloudflare Pages喵~
 
-💡本站由Vibe Coding方式驱动。
+💡本站由Vibe Coding方式驱动喵~
 
 🌍[立即访问本站](https://cxybbs.top)
 

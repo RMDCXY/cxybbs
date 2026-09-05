@@ -1,5 +1,3 @@
-
-
 const footerQuotes = [
     "枪炮是不长眼的，坦克是没有后视镜的",
     "114514",
@@ -288,7 +286,7 @@ const footerQuotes = [
         if (!el) return;
         const now = new Date();
         const diff = diffYMDHMS(siteStart, now);
-        el.textContent = `本站已运行${diff.y}年${diff.m}月${diff.d}日${diff.hh}时${diff.mm}分${diff.ss}秒`;
+        el.textContent = `本站已运行${diff.y}年${diff.m}月${diff.d}日${diff.hh}时${diff.mm}分${diff.ss}秒喵~`;
     }
 
     updateUptime();

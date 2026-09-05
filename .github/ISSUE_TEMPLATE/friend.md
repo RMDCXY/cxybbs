@@ -1,14 +1,15 @@
 ---
 name: 友链征集
-about: 征集友链，你的友链将会在网站关于展示
+about: 征集友链，你的友链将会在网站关于展示喵~
 labels: 友链征集
 title: '[友链征集] '
 ---
-## 🏷CXYBBS友链征集
+## 🏷CXYBBS友链征集喵~
 
-填写*友链征集*issue，你的友链将会在[本站关于界面](https://cxybbs.top/about)展示哦！
+填写*友链征集*issue，你的友链将会在[本站关于界面](https://cxybbs.top/about)展示喵~
 
 ---
+
 请填写：
 
 🏷友链**名称**：

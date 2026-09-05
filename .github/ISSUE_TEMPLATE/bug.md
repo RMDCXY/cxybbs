@@ -1,18 +1,19 @@
 ---
 name: BUG反馈
-about: 反馈网站出现的一些BUG
+about: 反馈网站出现的一些BUG喵~
 labels: BUG
 title: '[BUG] '
 ---
-## 🐛CXYBBS问题反馈
+## 🐛CXYBBS问题反馈喵~
 
-填写*问题反馈*issue，相关问题将会在大约1周内修复完成。
+填写*问题反馈*issue，相关问题将会在大约1周内修复完成喵~
 
-如果条件允许，也可以直接提PR哦！记得带标签
+如果条件允许，也可以直接提PR哦！记得带标签喵~
 
-发现本站问题提PR、提issue的反馈者都将在[本站关于界面](https://cxybbs.top/about)展示哦！
+发现本站问题提PR、提issue的反馈者都将在[本站关于界面](https://cxybbs.top/about)展示喵~
 
 ---
+
 请填写：
 
 🌏问题出现的**URL**：
