@@ -315,6 +315,8 @@ function shouqi() {
         'about:blank',
         '/404',
         'https://cloudflare-cn.com',
+        'https://b23.tv/oLPmSiD',
+        'https://b23.tv/FmnKlMa',
         'https://github.com',
         'https://gitforwindows.org',
         'https://microsoft.com',
