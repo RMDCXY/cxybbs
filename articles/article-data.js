@@ -1,4 +1,11 @@
 const ARTICLE_DB = {
+  "08": {
+    id: "08",
+    title: "一些有趣url喵",
+    date: "2026-09-09",
+    renderMarkdown: true
+  },
+
   "07": {
     id: "07",
     title: "高端设计 木及寒 速二令®电风扇",
