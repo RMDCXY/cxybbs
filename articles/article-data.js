@@ -1,4 +1,11 @@
 const ARTICLE_DB = {
+  "09": {
+    id: "09",
+    title: "看懂的人已经哭了",
+    date: "2026-09-24",
+    renderMarkdown: true
+  },
+
   "08": {
     id: "08",
     title: "一些有趣url喵",
