@@ -14,6 +14,13 @@
     </item>
 
     <item>
+      <title>没有无线调试、没有电脑、没有root，如何启动Shizuku？</title>
+      <link>https://cxybbs.top/#launch_shizuku</link>
+      <description>本视频通过使用另一部手机作为执行adb命令的设备，在没有无线调试、没有电脑和root的情况下启动了Shizuku</description>
+      <guid>https://cxybbs.top/#launch_shizuku</guid>
+    </item>
+
+    <item>
       <title>使用VSCode编译与调试C++程序</title>
       <link>https://cxybbs.top/#vscode_compile_cpp</link>
       <description>本期视频将教学如何使用VSCode通过MinGW编译cpp代码喵</description>
@@ -189,6 +196,7 @@
       <pubDate>Tue, 12 Nov 2024 00:00:00 GMT</pubDate>
       <guid>https://cxybbs.top/articles/article.html?id=01</guid>
     </item>
+
 
 
 
