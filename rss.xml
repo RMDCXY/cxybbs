@@ -14,6 +14,13 @@
     </item>
 
     <item>
+      <title>我把Minecraft和Git结合在了一起</title>
+      <link>https://cxybbs.top/#mcxgit</link>
+      <description>本视频将Minecraft存档作为Git仓库进行操作，实现了存档的“版本控制”</description>
+      <guid>https://cxybbs.top/#mcxgit</guid>
+    </item>
+
+    <item>
       <title>没有无线调试、没有电脑、没有root，如何启动Shizuku？</title>
       <link>https://cxybbs.top/#launch_shizuku</link>
       <description>本视频通过使用另一部手机作为执行adb命令的设备，在没有无线调试、没有电脑和root的情况下启动了Shizuku</description>
@@ -188,6 +195,7 @@
       <pubDate>Tue, 12 Nov 2024 00:00:00 GMT</pubDate>
       <guid>https://cxybbs.top/articles/article.html?id=01</guid>
     </item>
+
 
 
 
