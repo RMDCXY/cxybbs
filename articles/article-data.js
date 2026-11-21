@@ -1,4 +1,11 @@
 const ARTICLE_DB = {
+  "10": {
+    id: "10",
+    title: "闪萌GIF消失！如何近似禁用W11表情符号面板闪萌GIF？",
+    date: "2026-11-20",
+    renderMarkdown: true
+  },
+
   "09": {
     id: "09",
     title: "看懂的人已经哭了",

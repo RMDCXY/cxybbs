@@ -18,7 +18,7 @@ h1{
 .gradient-heading {
     display: inline-block;
     font-family: Smileysans;
-    background-image: linear-gradient(to right,rgb(0, 162, 255),rgb(0, 106, 255));
+    background-image: linear-gradient(to right,rgb(0, 162, 255),rgb(0, 132, 255));
     background-clip: text;
     --webkit-background-clip: text;
     color: transparent;

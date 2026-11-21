@@ -8,7 +8,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-image: url('../img/pc.png');
+    background-image: url('../img/pc.webp');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -18,7 +18,7 @@ body {
 
 @media (max-width: 768px) {
     body {
-        background-image: url('../img/mob.png');
+        background-image: url('../img/mob.webp');
     }
 }
 
@@ -280,7 +280,7 @@ a {
 .section-title {
     font-size: 1.25rem;
     font-weight: bold;
-    color: #007cff;
+    color: #007bff;
     margin-bottom: 6px;
     font-family: 'Smileysans', Arial, sans-serif;
     display: -webkit-box;
@@ -373,7 +373,7 @@ a {
 
 .footer a {
     background: transparent;
-    color: #007cff;
+    color: #007bff;
     box-shadow: none;
     border-radius: 0;
     padding:0 !important;
